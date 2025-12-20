@@ -22,7 +22,7 @@
             display: flex;
         }
 
-        /* SIDEBAR COMPLETA [cite: 2025-12-16] */
+        /* SIDEBAR COMPLETA */
         .sidebar {
             width: 260px;
             background: #1e293b;
@@ -119,6 +119,7 @@
             padding: 20px;
             border-radius: 15px;
             border: 1px solid rgba(0, 242, 255, 0.2);
+            position: relative;
         }
     </style>
 </head>
@@ -132,7 +133,7 @@
             <a href="admin-finanzas.html" class="nav-link"><i class="fas fa-cash-register"></i> Finanzas</a>
             <a href="admin-buzon.html" class="nav-link"><i class="fas fa-inbox"></i> Buzón de Quejas</a>
             <a href="admin-iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
-            
+            <a href="admin-preguntas.html" class="nav-link"><i class="fas fa-question-circle"></i> Preguntas</a>
             <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid #334155;">
                 <a href="index.html" class="nav-link" style="color: var(--neon-pink); font-weight: bold;">
                     <i class="fas fa-arrow-left"></i> VOLVER AL SITIO
@@ -173,6 +174,12 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
+        // --- 1. EL GUARDIA DE SEGURIDAD (AL PRINCIPIO) ---
+        if (localStorage.getItem("admin_access") !== "true") {
+            window.location.href = "index.html";
+        }
+
+        // --- 2. CONFIGURACIÓN DE FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
             authDomain: "voxschola.firebaseapp.com",
@@ -186,6 +193,7 @@
 
         let editandoId = null;
 
+        // --- 3. FUNCIONES DE ADMINISTRACIÓN ---
         async function crearOEditarVotacion() {
             const titulo = document.getElementById('pollTitle').value;
             const a = document.getElementById('optA').value;
@@ -217,12 +225,15 @@
                     const p = doc.data();
                     contenedor.innerHTML += `
                         <div class="poll-card">
-                            <div style="float: right;">
-                                <button style="background:none; border:1px solid var(--neon-blue); color:var(--neon-blue); border-radius:5px; cursor:pointer;" onclick="prepararEdicion('${doc.id}', \`${p.titulo}\`, \`${p.opcionA}\`, \`${p.opcionB}\`)"><i class="fas fa-edit"></i></button>
-                                <button style="background:none; border:1px solid #ef4444; color:#ef4444; border-radius:5px; cursor:pointer;" onclick="borrarVotacion('${doc.id}')"><i class="fas fa-trash"></i></button>
+                            <div style="position: absolute; right: 15px; top: 15px;">
+                                <button style="background:none; border:1px solid var(--neon-blue); color:var(--neon-blue); border-radius:5px; cursor:pointer; padding: 5px 8px;" onclick="prepararEdicion('${doc.id}', \`${p.titulo}\`, \`${p.opcionA}\`, \`${p.opcionB}\`)"><i class="fas fa-edit"></i></button>
+                                <button style="background:none; border:1px solid #ef4444; color:#ef4444; border-radius:5px; cursor:pointer; padding: 5px 8px;" onclick="borrarVotacion('${doc.id}')"><i class="fas fa-trash"></i></button>
                             </div>
-                            <h4 style="color:var(--neon-blue); margin-top:0;">${p.titulo}</h4>
-                            <p style="font-size: 0.8rem; color:#94a3b8;">${p.opcionA}: ${p.votosA || 0} | ${p.opcionB}: ${p.votosB || 0}</p>
+                            <h4 style="color:var(--neon-blue); margin-top:0; padding-right: 60px;">${p.titulo}</h4>
+                            <p style="font-size: 0.85rem; color:#94a3b8; margin: 5px 0;">
+                                <b>${p.opcionA}:</b> ${p.votosA || 0} votos<br>
+                                <b>${p.opcionB}:</b> ${p.votosB || 0} votos
+                            </p>
                         </div>`;
                 });
             });
@@ -233,8 +244,9 @@
             document.getElementById('pollTitle').value = titulo;
             document.getElementById('optA').value = a;
             document.getElementById('optB').value = b;
-            document.getElementById('btnSubmit').innerText = "Guardar";
+            document.getElementById('btnSubmit').innerText = "Guardar Cambios";
             document.getElementById('btnCancel').style.display = "block";
+            document.getElementById('form-title').innerText = "Editando Votación";
         };
 
         window.cancelarEdicion = () => {
@@ -244,10 +256,13 @@
             document.getElementById('optB').value = "";
             document.getElementById('btnSubmit').innerText = "Lanzar Votación";
             document.getElementById('btnCancel').style.display = "none";
+            document.getElementById('form-title').innerText = "Nueva Misión";
         };
 
         async function borrarVotacion(id) {
-            if(confirm("¿Borrar?")) await db.collection("votaciones").doc(id).delete();
+            if(confirm("¿Estás seguro de eliminar esta votación? Esto no se puede deshacer.")) {
+                await db.collection("votaciones").doc(id).delete();
+            }
         }
 
         window.onload = cargarVotaciones;

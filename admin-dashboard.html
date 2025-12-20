@@ -61,6 +61,7 @@
                 <a href="admin-buzon.html" class="nav-link"><i class="fas fa-inbox"></i> Buzón de Quejas</a>
                 <a href="admin-iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
                 <a href="index.html" class="nav-link return-link">
+                <a href="admin-preguntas.html" class="nav-link"><i class="fas fa-question-circle"></i> Preguntas</a>
     <i class="fas fa-arrow-left"></i> Volver al Sitio
 </a>
                 <div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
@@ -105,6 +106,10 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
+        // --- 1. EL GUARDIA DE SEGURIDAD (AL PRINCIPIO) ---
+        if (localStorage.getItem("admin_access") !== "true") {
+            window.location.href = "index.html";
+        }
         const firebaseConfig = {
             apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
             authDomain: "voxschola.firebaseapp.com",

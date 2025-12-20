@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Votaciones | Comunidad Vox</title>
-    <link rel="stylesheet" href="estilos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
@@ -25,9 +24,10 @@
             font-family: 'Plus Jakarta Sans', sans-serif; 
             margin: 0;
             display: flex;
+            min-height: 100vh;
         }
 
-        /* SIDEBAR ACTUALIZADA */
+        /* SIDEBAR */
         .sidebar { 
             width: 280px; height: 100vh; background: var(--sidebar-bg); 
             position: fixed; left: 0; top: 0; border-right: 2px solid rgba(6, 182, 212, 0.2); 
@@ -49,40 +49,54 @@
         .main-content { margin-left: 280px; padding: 40px 60px; flex-grow: 1; background: radial-gradient(circle at top right, #1e1b4b, #020617); min-height: 100vh; }
         .welcome-section h1 { font-size: 2.2rem; font-weight: 800; margin: 0; color: white; }
 
-        /* BOTONES DE VOTO MÁS ENTENDIBLES */
+        /* TARJETAS CON ILUMINACIÓN HOVER */
+        .vote-card {
+            background: rgba(30, 41, 59, 0.7); 
+            border-radius: 30px; 
+            padding: 25px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .vote-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 15px 35px rgba(6, 182, 212, 0.2), 0 0 15px rgba(139, 92, 246, 0.1);
+        }
+
+        /* BARRAS DE PROGRESO */
+        .progress-container { width: 100%; background: #0f172a; height: 12px; border-radius: 20px; margin: 10px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); transition: 1s ease; }
+        .progress-bar.rosa { background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+
+        /* BOTONES */
         .btn-voto { 
             background: rgba(255, 255, 255, 0.05); color: white;
             padding: 12px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); font-weight: 700; cursor: pointer;
             transition: 0.3s; width: 100%; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;
         }
-        .btn-voto:hover { background: var(--neon-cyan); color: #000; border-color: white; }
+        .btn-voto:hover { background: var(--neon-cyan); color: #000; border-color: white; transform: scale(1.02); }
         .btn-voto.opcion-b:hover { background: var(--neon-pink); color: white; }
 
-        /* TARJETAS */
-        .vote-card {
-            background: rgba(30, 41, 59, 0.7); border-radius: 30px; padding: 25px; 
-            border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.4s;
-        }
-        .progress-container { width: 100%; background: #0f172a; height: 10px; border-radius: 20px; margin: 10px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); transition: 1s; }
+        .category-tag { font-size: 0.7rem; color: var(--neon-cyan); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-    <div class="logo-box">
-        <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
-        <div class="logo-sub">Comunidad Estudiantil</div>
-    </div>
-    <nav class="nav-menu">
-        <a href="index.html" class="nav-link"><i class="fas fa-house"></i> INICIO</a>
-        <a href="entrevista-mantenimiento.html" class="nav-link"><i class="fas fa-clipboard-check"></i> ENTREVISTA</a>
-        <a href="votaciones.html" class="nav-link active "><i class="fas fa-check-to-slot"></i> VOTACIONES</a>
-        <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> PROYECTOS</a>
-        <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> TRANSPARENCIA</a>
-        <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> SUGERENCIAS</a>
-    </nav>
-</aside>
+        <div class="logo-box">
+            <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+            <div class="logo-sub">Comunidad Estudiantil</div>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-link"><i class="fas fa-house"></i> INICIO</a>
+            <a href="entrevista-mantenimiento.html" class="nav-link"><i class="fas fa-clipboard-check"></i> ENTREVISTA</a>
+            <a href="votaciones.html" class="nav-link active"><i class="fas fa-check-to-slot"></i> VOTACIONES</a>
+            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> PROYECTOS</a>
+            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> TRANSPARENCIA</a>
+            <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> SUGERENCIAS</a>
+        </nav>
+    </aside>
 
     <main class="main-content">
         <header class="welcome-section">
@@ -90,143 +104,101 @@
             <p style="color: var(--text-dim);">Tu opinión ayuda a construir una mejor escuela para todos.</p>
         </header>
 
-        <div style="margin: 30px 0;">
-            
-        </div>
-
-        <div id="contenedor-votaciones" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; margin-top: 20px;">
+        <div id="contenedor-votaciones" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; margin-top: 40px;">
             <p style="text-align: center; color: var(--neon-cyan);">Cargando consultas disponibles...</p>
         </div>
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
-    authDomain: "voxschola.firebaseapp.com",
-    projectId: "voxschola",
-    storageBucket: "voxschola.firebasestorage.app",
-    messagingSenderId: "730366058404",
-    appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+            authDomain: "voxschola.firebaseapp.com",
+            projectId: "voxschola",
+            storageBucket: "voxschola.firebasestorage.app",
+            messagingSenderId: "730366058404",
+            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+        };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-// ID de usuario para evitar votos múltiples
-if(!localStorage.getItem('user_id_vox')) {
-    localStorage.setItem('user_id_vox', 'user_' + Math.random().toString(36).substr(2, 9));
-}
-const USER_ID = localStorage.getItem('user_id_vox');
-
-// --- AQUÍ ESTÁ EL TRUCO PARA QUE APAREZCAN LAS VOTACIONES ---
-onSnapshot(collection(db, "votaciones"), (snapshot) => {
-    const contenedor = document.getElementById('contenedor-votaciones');
-    contenedor.innerHTML = ""; // Limpiar mensaje de carga
-
-    snapshot.forEach((d) => {
-        const data = d.data();
-        const id = d.id;
-        const total = data.totalVotos || 0;
-        const porcA = total > 0 ? Math.round(((data.votosOpA || 0) / total) * 100) : 0;
-        const porcB = total > 0 ? Math.round(((data.votosOpB || 0) / total) * 100) : 0;
-
-        contenedor.innerHTML += `
-            <div class="vote-card">
-                <span class="category-tag">${data.categoria || 'GENERAL'}</span>
-                <h3 style="margin: 15px 0;">${data.titulo}</h3>
-                
-                <div style="margin-bottom: 20px;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
-                        <span>${data.nombreOpA}</span>
-                        <span class="percentage-text">${porcA}%</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${porcA}%"></div>
-                    </div>
-                    <button class="btn-voto" onclick="registrarVoto('${id}', 'A')">
-                        VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-
-                <div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
-                        <span>${data.nombreOpB}</span>
-                        <span class="percentage-text" style="color: var(--neon-pink);">${porcB}%</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${porcB}%; background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink);"></div>
-                    </div>
-                    <button class="btn-voto opcion-b" onclick="registrarVoto('${id}', 'B')">
-                        VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-    });
-});
-
-// Hacer la función accesible para los botones
-window.registrarVoto = async (id, opcionElegida) => {
-    const ref = doc(db, "votaciones", id);
-    try {
-        const docSnap = await getDoc(ref);
-        const data = docSnap.data();
-
-        if (data.votantes && data.votantes.includes(USER_ID)) {
-            alert("Ya has participado en esta consulta.");
-            return;
+        if(!localStorage.getItem('user_id_vox')) {
+            localStorage.setItem('user_id_vox', 'user_' + Math.random().toString(36).substr(2, 9));
         }
+        const USER_ID = localStorage.getItem('user_id_vox');
 
-        const actualizacion = {};
-        const campoVoto = opcionElegida === 'A' ? "votosOpA" : "votosOpB";
-        actualizacion[campoVoto] = (data[campoVoto] || 0) + 1;
-        actualizacion["totalVotos"] = (data.totalVotos || 0) + 1;
-        actualizacion["votantes"] = arrayUnion(USER_ID);
+        onSnapshot(collection(db, "votaciones"), (snapshot) => {
+            const contenedor = document.getElementById('contenedor-votaciones');
+            contenedor.innerHTML = ""; 
 
-        await updateDoc(ref, actualizacion);
-    } catch (e) { console.error("Error al votar:", e); }
-};
-        // ... (Tu código de Firebase se mantiene igual) ...
-        // Solo actualizaré la parte visual del bucle onSnapshot para que use los nuevos botones:
+            snapshot.forEach((d) => {
+                const data = d.data();
+                const id = d.id;
+                const total = data.totalVotos || 0;
+                const porcA = total > 0 ? Math.round(((data.votosOpA || 0) / total) * 100) : 0;
+                const porcB = total > 0 ? Math.round(((data.votosOpB || 0) / total) * 100) : 0;
 
-        /* Dentro del snapshot.forEach: */
-        /*
-        contenedor.innerHTML += `
-            <div class="vote-card">
-                <span style="font-size:0.7rem; color:var(--neon-cyan); font-weight:800;">${data.categoria}</span>
-                <h3 style="margin: 10px 0;">${data.titulo}</h3>
-                
-                <div style="margin-top:20px;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
-                        <span>${data.nombreOpA}</span>
-                        <span>${porcA}%</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${porcA}%"></div>
-                    </div>
-                    <button class="btn-voto" onclick="registrarVoto('${id}', 'A')">
-                        VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
+                contenedor.innerHTML += `
+                    <div class="vote-card">
+                        <span class="category-tag">${data.categoria || 'GENERAL'}</span>
+                        <h3 style="margin: 15px 0; color: white;">${data.titulo}</h3>
+                        
+                        <div style="margin-bottom: 25px;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom: 5px;">
+                                <span>${data.nombreOpA}</span>
+                                <span style="color: var(--neon-cyan); font-weight: 800;">${porcA}%</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: ${porcA}%"></div>
+                            </div>
+                            <button class="btn-voto" onclick="registrarVoto('${id}', 'A')">
+                                VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
 
-                <div style="margin-top:25px;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
-                        <span>${data.nombreOpB}</span>
-                        <span>${porcB}%</span>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom: 5px;">
+                                <span>${data.nombreOpB}</span>
+                                <span style="color: var(--neon-pink); font-weight: 800;">${porcB}%</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar rosa" style="width: ${porcB}%"></div>
+                            </div>
+                            <button class="btn-voto opcion-b" onclick="registrarVoto('${id}', 'B')">
+                                VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${porcB}%; background:var(--neon-pink); box-shadow:0 0 10px var(--neon-pink);"></div>
-                    </div>
-                    <button class="btn-voto opcion-b" onclick="registrarVoto('${id}', 'B')">
-                        VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-        */
+                `;
+            });
+        });
+
+        window.registrarVoto = async (id, opcionElegida) => {
+            const ref = doc(db, "votaciones", id);
+            try {
+                const docSnap = await getDoc(ref);
+                const data = docSnap.data();
+
+                if (data.votantes && data.votantes.includes(USER_ID)) {
+                    alert("Ya has participado en esta consulta.");
+                    return;
+                }
+
+                const actualizacion = {};
+                const campoVoto = opcionElegida === 'A' ? "votosOpA" : "votosOpB";
+                actualizacion[campoVoto] = (data[campoVoto] || 0) + 1;
+                actualizacion["totalVotos"] = (data.totalVotos || 0) + 1;
+                actualizacion["votantes"] = arrayUnion(USER_ID);
+
+                await updateDoc(ref, actualizacion);
+                alert("¡Gracias por tu voto!");
+            } catch (e) { 
+                console.error("Error al votar:", e); 
+            }
+        };
     </script>
 </body>
 </html>
