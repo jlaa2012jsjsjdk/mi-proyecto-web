@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Votaciones | Vox Schola</title>
+    <title>Votaciones | Comunidad Vox</title>
     <link rel="stylesheet" href="estilos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
@@ -17,7 +17,6 @@
             --neon-cyan: #06b6d4;
             --text-main: #f1f5f9; 
             --text-dim: #94a3b8; 
-            --success: #10b981;
         }
 
         body { 
@@ -28,14 +27,16 @@
             display: flex;
         }
 
-        /* SIDEBAR (Mantenida del index para consistencia) */
+        /* SIDEBAR ACTUALIZADA */
         .sidebar { 
             width: 280px; height: 100vh; background: var(--sidebar-bg); 
-            position: fixed; left: 0; top: 0; border-right: 2px solid rgba(139, 92, 246, 0.2); 
+            position: fixed; left: 0; top: 0; border-right: 2px solid rgba(6, 182, 212, 0.2); 
             padding: 25px; z-index: 9999; display: flex; flex-direction: column;
         }
 
-        .logo { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin-bottom: 40px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.5); }
+        .logo-box { margin-bottom: 40px; }
+        .logo-main { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+        .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
 
         .nav-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
         .nav-link {
@@ -44,167 +45,187 @@
         }
         .nav-link:hover, .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
-        /* CONTENIDO PRINCIPAL */
+        /* CONTENIDO */
         .main-content { margin-left: 280px; padding: 40px 60px; flex-grow: 1; background: radial-gradient(circle at top right, #1e1b4b, #020617); min-height: 100vh; }
+        .welcome-section h1 { font-size: 2.2rem; font-weight: 800; margin: 0; color: white; }
 
-        .welcome-section h1 { font-size: 2.5rem; font-weight: 800; margin: 0; background: linear-gradient(to right, #fff, var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* BOTONES DE VOTO MÁS ENTENDIBLES */
+        .btn-voto { 
+            background: rgba(255, 255, 255, 0.05); color: white;
+            padding: 12px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); font-weight: 700; cursor: pointer;
+            transition: 0.3s; width: 100%; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .btn-voto:hover { background: var(--neon-cyan); color: #000; border-color: white; }
+        .btn-voto.opcion-b:hover { background: var(--neon-pink); color: white; }
 
-        /* MINI CARDS DE CATEGORÍA */
-        .quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin: 30px 0; }
-        .mini-card { background: var(--card-bg); padding: 20px; border-radius: 24px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.3s; }
-        .mini-card:hover { transform: translateY(-5px); border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(6, 182, 212, 0.2); }
-        .icon-square { width: 50px; height: 50px; border-radius: 15px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-
-        /* TARJETAS DE VOTACIÓN */
+        /* TARJETAS */
         .vote-card {
-            background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px);
-            border-radius: 30px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: 0.4s; position: relative; overflow: hidden;
+            background: rgba(30, 41, 59, 0.7); border-radius: 30px; padding: 25px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.4s;
         }
-        .vote-card:hover { transform: scale(1.02); border-color: var(--neon-purple); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-
-        .category-tag { font-size: 0.65rem; text-transform: uppercase; padding: 5px 12px; border-radius: 50px; background: rgba(139, 92, 246, 0.2); color: var(--neon-cyan); font-weight: 800; letter-spacing: 1px; }
-
-        .progress-container { width: 100%; background: #0f172a; height: 14px; border-radius: 20px; margin: 8px 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        .progress-bar { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink)); transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 10px var(--neon-purple); }
-
-        .btn-votar-link { 
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink)); color: white;
-            padding: 10px 20px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer;
-            transition: 0.3s; width: 100%; margin-top: 5px; text-transform: uppercase; font-size: 0.8rem;
-        }
-        .btn-votar-link:hover { transform: translateY(-3px); box-shadow: 0 5px 15px var(--neon-pink); opacity: 0.9; }
-
-        .percentage-text { color: var(--neon-cyan); font-weight: 800; font-size: 1.1rem; }
+        .progress-container { width: 100%; background: #0f172a; height: 10px; border-radius: 20px; margin: 10px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); transition: 1s; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="logo"><i class="fas fa-bolt"></i> VOX ADMIN</div>
+        <div class="logo-box">
+            <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+            <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
+        </div>
         <nav class="nav-menu">
             <a href="index.html" class="nav-link"><i class="fas fa-house"></i> Inicio</a>
-            <a href="votaciones.html" class="nav-link active"><i class="fas fa-fire"></i> Votaciones</a>
-            <a href="finanzas.html" class="nav-link"><i class="fas fa-wallet"></i> Finanzas</a>
-            <a href="buzon.html" class="nav-link"><i class="fas fa-envelope"></i> Buzón</a>
-            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+            <a href="votaciones.html" class="nav-link active"><i class="fas fa-check-to-slot"></i> Centro de Votos</a>
+            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> Transparencia</a>
+            <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> Sugerencias</a>
+            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Proyectos</a>
         </nav>
     </aside>
 
     <main class="main-content">
         <header class="welcome-section">
-            <h1>¿Qué decidimos hoy? 🔥</h1>
-            <p style="color: var(--text-dim);">Tu voz, tus reglas. Participa en las decisiones de la comunidad.</p>
+            <h1>Participación Ciudadana</h1>
+            <p style="color: var(--text-dim);">Tu opinión ayuda a construir una mejor escuela para todos.</p>
         </header>
 
-        <div class="quick-grid">
-            <div class="mini-card">
-                <div class="icon-square" style="background: rgba(139, 92, 246, 0.2); color: var(--neon-purple);"><i class="fas fa-music"></i></div>
-                <h4 style="margin:0; font-size:0.9rem;">Eventos</h4>
-            </div>
-            <div class="mini-card">
-                <div class="icon-square" style="background: rgba(6, 182, 212, 0.2); color: var(--neon-cyan);"><i class="fas fa-utensils"></i></div>
-                <h4 style="margin:0; font-size:0.9rem;">Cafetería</h4>
-            </div>
-            <div class="mini-card">
-                <div class="icon-square" style="background: rgba(236, 72, 153, 0.2); color: var(--neon-pink);"><i class="fas fa-volleyball"></i></div>
-                <h4 style="margin:0; font-size:0.9rem;">Deportes</h4>
-            </div>
+        <div style="margin: 30px 0;">
+            
         </div>
 
-        <div id="contenedor-votaciones" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 30px;">
-            <p style="text-align: center; color: var(--neon-cyan);">Cargando misiones de voto...</p>
+        <div id="contenedor-votaciones" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; margin-top: 20px;">
+            <p style="text-align: center; color: var(--neon-cyan);">Cargando consultas disponibles...</p>
         </div>
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
-            authDomain: "voxschola.firebaseapp.com",
-            projectId: "voxschola",
-            storageBucket: "voxschola.firebasestorage.app",
-            messagingSenderId: "730366058404",
-            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
-        };
+const firebaseConfig = {
+    apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+    authDomain: "voxschola.firebaseapp.com",
+    projectId: "voxschola",
+    storageBucket: "voxschola.firebasestorage.app",
+    messagingSenderId: "730366058404",
+    appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+};
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-        if(!localStorage.getItem('user_id_vox')) {
-            localStorage.setItem('user_id_vox', 'user_' + Math.random().toString(36).substr(2, 9));
-        }
-        const USER_ID = localStorage.getItem('user_id_vox');
+// ID de usuario para evitar votos múltiples
+if(!localStorage.getItem('user_id_vox')) {
+    localStorage.setItem('user_id_vox', 'user_' + Math.random().toString(36).substr(2, 9));
+}
+const USER_ID = localStorage.getItem('user_id_vox');
 
-        window.registrarVoto = async (id, opcionElegida) => {
-            const ref = doc(db, "votaciones", id);
-            try {
-                const docSnap = await getDoc(ref);
-                const data = docSnap.data();
+// --- AQUÍ ESTÁ EL TRUCO PARA QUE APAREZCAN LAS VOTACIONES ---
+onSnapshot(collection(db, "votaciones"), (snapshot) => {
+    const contenedor = document.getElementById('contenedor-votaciones');
+    contenedor.innerHTML = ""; // Limpiar mensaje de carga
 
-                if (data.votantes && data.votantes.includes(USER_ID)) {
-                    alert("¡Misión fallida! Ya has votado en esta consulta.");
-                    return;
-                }
+    snapshot.forEach((d) => {
+        const data = d.data();
+        const id = d.id;
+        const total = data.totalVotos || 0;
+        const porcA = total > 0 ? Math.round(((data.votosOpA || 0) / total) * 100) : 0;
+        const porcB = total > 0 ? Math.round(((data.votosOpB || 0) / total) * 100) : 0;
 
-                const actualizacion = {};
-                actualizacion[opcionElegida === 'A' ? "votosOpA" : "votosOpB"] = (data[opcionElegida === 'A' ? "votosOpA" : "votosOpB"] || 0) + 1;
-                actualizacion["totalVotos"] = (data.totalVotos || 0) + 1;
-                actualizacion["votantes"] = arrayUnion(USER_ID);
-
-                await updateDoc(ref, actualizacion);
-                alert("¡Voto encriptado con éxito!");
-            } catch (e) { console.error(e); }
-        };
-
-        onSnapshot(collection(db, "votaciones"), (snapshot) => {
-            const contenedor = document.getElementById('contenedor-votaciones');
-            contenedor.innerHTML = "";
-
-            snapshot.forEach((d) => {
-                const data = d.data();
-                const id = d.id;
-                const total = data.totalVotos || 0;
-                const porcA = total > 0 ? Math.round(((data.votosOpA || 0) / total) * 100) : 0;
-                const porcB = total > 0 ? Math.round(((data.votosOpB || 0) / total) * 100) : 0;
-
-                contenedor.innerHTML += `
-                    <div class="vote-card">
-                        <span class="category-tag">${data.categoria || 'GENERAL'}</span>
-                        <h3 style="color: white; margin: 15px 0 20px 0; font-size: 1.2rem;">${data.titulo}</h3>
-                        
-                        <div style="margin-bottom: 25px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-weight:700; font-size:0.9rem;">${data.nombreOpA || 'Opción A'}</span>
-                                <span class="percentage-text">${porcA}%</span>
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-bar" style="width: ${porcA}%"></div>
-                            </div>
-                            <button class="btn-votar-link" onclick="registrarVoto('${id}', 'A')">Elegir ${data.nombreOpA || 'A'}</button>
-                        </div>
-
-                        <div style="margin-bottom: 15px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-weight:700; font-size:0.9rem;">${data.nombreOpB || 'Opción B'}</span>
-                                <span class="percentage-text" style="color: var(--neon-pink);">${porcB}%</span>
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-bar" style="width: ${porcB}%; background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink);"></div>
-                            </div>
-                            <button class="btn-votar-link" style="background: var(--card-bg); border: 1px solid var(--neon-pink); color: var(--neon-pink);" 
-                                onclick="registrarVoto('${id}', 'B')">Elegir ${data.nombreOpB || 'B'}</button>
-                        </div>
-
-                        <div style="margin-top: 20px; font-size: 0.75rem; color: var(--text-dim); display: flex; align-items: center; gap: 5px;">
-                            <i class="fas fa-users" style="color: var(--neon-cyan);"></i> ${total} alumnos han decidido
-                        </div>
+        contenedor.innerHTML += `
+            <div class="vote-card">
+                <span class="category-tag">${data.categoria || 'GENERAL'}</span>
+                <h3 style="margin: 15px 0;">${data.titulo}</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+                        <span>${data.nombreOpA}</span>
+                        <span class="percentage-text">${porcA}%</span>
                     </div>
-                `;
-            });
-        });
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${porcA}%"></div>
+                    </div>
+                    <button class="btn-voto" onclick="registrarVoto('${id}', 'A')">
+                        VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+                        <span>${data.nombreOpB}</span>
+                        <span class="percentage-text" style="color: var(--neon-pink);">${porcB}%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${porcB}%; background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink);"></div>
+                    </div>
+                    <button class="btn-voto opcion-b" onclick="registrarVoto('${id}', 'B')">
+                        VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+});
+
+// Hacer la función accesible para los botones
+window.registrarVoto = async (id, opcionElegida) => {
+    const ref = doc(db, "votaciones", id);
+    try {
+        const docSnap = await getDoc(ref);
+        const data = docSnap.data();
+
+        if (data.votantes && data.votantes.includes(USER_ID)) {
+            alert("Ya has participado en esta consulta.");
+            return;
+        }
+
+        const actualizacion = {};
+        const campoVoto = opcionElegida === 'A' ? "votosOpA" : "votosOpB";
+        actualizacion[campoVoto] = (data[campoVoto] || 0) + 1;
+        actualizacion["totalVotos"] = (data.totalVotos || 0) + 1;
+        actualizacion["votantes"] = arrayUnion(USER_ID);
+
+        await updateDoc(ref, actualizacion);
+    } catch (e) { console.error("Error al votar:", e); }
+};
+        // ... (Tu código de Firebase se mantiene igual) ...
+        // Solo actualizaré la parte visual del bucle onSnapshot para que use los nuevos botones:
+
+        /* Dentro del snapshot.forEach: */
+        /*
+        contenedor.innerHTML += `
+            <div class="vote-card">
+                <span style="font-size:0.7rem; color:var(--neon-cyan); font-weight:800;">${data.categoria}</span>
+                <h3 style="margin: 10px 0;">${data.titulo}</h3>
+                
+                <div style="margin-top:20px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                        <span>${data.nombreOpA}</span>
+                        <span>${porcA}%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${porcA}%"></div>
+                    </div>
+                    <button class="btn-voto" onclick="registrarVoto('${id}', 'A')">
+                        VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div style="margin-top:25px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                        <span>${data.nombreOpB}</span>
+                        <span>${porcB}%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${porcB}%; background:var(--neon-pink); box-shadow:0 0 10px var(--neon-pink);"></div>
+                    </div>
+                    <button class="btn-voto opcion-b" onclick="registrarVoto('${id}', 'B')">
+                        VOTAR POR ESTA OPCIÓN <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        */
     </script>
 </body>
 </html>

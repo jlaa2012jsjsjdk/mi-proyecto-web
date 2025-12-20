@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buzón Seguro | Vox Schola</title>
-    <link rel="stylesheet" href="estilos.css">
+    <title>Sugerencias | Comunidad Vox</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
@@ -19,25 +18,31 @@
             --text-dim: #94a3b8;
         }
 
+        * { box-sizing: border-box; }
+
         body { 
             margin: 0; background-color: var(--bg-dark); 
             color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif;
-            display: flex; min-height: 100vh;
+            display: flex; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* SIDEBAR CONSISTENTE */
+        /* SIDEBAR UNIFICADO */
         .sidebar { 
             width: 280px; height: 100vh; background: var(--sidebar-bg); 
-            position: fixed; left: 0; top: 0; border-right: 2px solid rgba(139, 92, 246, 0.2); 
+            position: fixed; left: 0; top: 0; border-right: 2px solid rgba(6, 182, 212, 0.2); 
             padding: 25px; z-index: 9999; display: flex; flex-direction: column;
         }
-        .logo { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin-bottom: 40px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.5); }
+        
+        .logo-box { margin-bottom: 30px; }
+        .logo-main { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+        .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
+
         .nav-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
         .nav-link {
             text-decoration: none; color: var(--text-dim); padding: 14px 18px; border-radius: 15px;
             display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600;
         }
-        .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
+        .nav-link:hover, .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
         /* CONTENIDO */
         .main-content { margin-left: 280px; padding: 40px 60px; flex-grow: 1; background: radial-gradient(circle at center, #1e1b4b, #020617); display: flex; justify-content: center; align-items: center; }
@@ -91,13 +96,16 @@
 <body>
 
     <aside class="sidebar">
-        <div class="logo"><i class="fas fa-bolt"></i> VOX ADMIN</div>
+        <div class="logo-box">
+            <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+            <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
+        </div>
         <nav class="nav-menu">
             <a href="index.html" class="nav-link"><i class="fas fa-house"></i> Inicio</a>
-            <a href="votaciones.html" class="nav-link"><i class="fas fa-fire"></i> Votaciones</a>
-            <a href="finanzas.html" class="nav-link"><i class="fas fa-wallet"></i> Finanzas</a>
-            <a href="buzon.html" class="nav-link active"><i class="fas fa-envelope"></i> Buzón</a>
-            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+            <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> Centro de Votos</a>
+            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> Transparencia</a>
+            <a href="buzon.html" class="nav-link active"><i class="fas fa-comment-dots"></i> Sugerencias</a>
+            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Proyectos</a>
         </nav>
     </aside>
 
@@ -105,27 +113,27 @@
         <div class="buzon-container">
             <header style="text-align: center; margin-bottom: 40px;">
                 <div class="header-icon"><i class="fas fa-user-secret"></i></div>
-                <h1 style="margin:0; font-size: 2.2rem; font-weight: 800;">Buzón Anónimo</h1>
-                <p style="color: var(--text-dim);">Tu identidad está protegida por cifrado escolar.</p>
+                <h1 style="margin:0; font-size: 2.2rem; font-weight: 800;">Buzón Ciudadano</h1>
+                <p style="color: var(--text-dim);">Tu opinión llega directo a los representantes de forma segura.</p>
             </header>
 
             <div class="buzon-capsule">
                 <div class="form-group">
-                    <label>Destinatario</label>
-                    <input type="text" id="asunto" placeholder="Ej: Dirección, Cafetería, Profe...">
+                    <label>Dirigido a:</label>
+                    <input type="text" id="asunto" placeholder="Ej: Comité de Padres, Dirección, Mantenimiento...">
                 </div>
 
                 <div class="form-group">
-                    <label>Mensaje Confidencial</label>
-                    <textarea id="mensaje" rows="5" placeholder="Escribe aquí con total libertad..."></textarea>
+                    <label>Comentario o Sugerencia</label>
+                    <textarea id="mensaje" rows="5" placeholder="Escribe aquí tu propuesta o reporte..."></textarea>
                 </div>
 
                 <button class="btn-enviar" id="btnEnviar">
-                    <i class="fas fa-shield-alt"></i> Transmisión Segura
+                    <i class="fas fa-paper-plane"></i> ENVIAR SUGERENCIA
                 </button>
                 
                 <p style="text-align: center; color: var(--text-dim); font-size: 0.7rem; margin-top: 25px; letter-spacing: 1px;">
-                    SISTEMA DE ENCRIPTACIÓN VOX V2.0 ACTIVADO
+                    ESTE MENSAJE ES ENVIADO BAJO PROTOCOLO DE PRIVACIDAD
                 </p>
             </div>
         </div>
@@ -152,10 +160,10 @@
             const msg = document.getElementById('mensaje').value;
             const btn = document.getElementById('btnEnviar');
 
-            if(!asu || !msg) return alert("Completa los campos para iniciar la transmisión.");
+            if(!asu || !msg) return alert("Por favor escribe un mensaje antes de enviar.");
 
             try {
-                btn.innerHTML = '<i class="fas fa-sync fa-spin"></i> Cifrando...';
+                btn.innerHTML = '<i class="fas fa-sync fa-spin"></i> Enviando...';
                 btn.disabled = true;
 
                 await addDoc(collection(db, "buzon"), {
@@ -164,11 +172,11 @@
                     fecha: serverTimestamp()
                 });
 
-                alert("🚀 Mensaje enviado. Tu anonimato ha sido preservado.");
+                alert("✅ Tu sugerencia ha sido enviada con éxito.");
                 location.reload();
             } catch(e) { 
-                alert("Error en el enlace de datos."); 
-                btn.innerHTML = '<i class="fas fa-shield-alt"></i> Reintentar Transmisión';
+                alert("Hubo un problema al enviar los datos."); 
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Reintentar Envío';
                 btn.disabled = false;
             }
         });

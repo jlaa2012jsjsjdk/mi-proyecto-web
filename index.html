@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | Vox Schola</title>
+    <title>Inicio | Comunidad Vox</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
@@ -31,25 +31,19 @@
             overflow-x: hidden;
         }
 
-        /* SIDEBAR ESTILO GAMER */
+        /* SIDEBAR ACTUALIZADA A COMUNIDAD */
         .sidebar { 
             width: 280px; height: 100vh; 
             background: var(--sidebar-bg); 
             position: fixed; left: 0; top: 0; 
-            border-right: 2px solid rgba(139, 92, 246, 0.2); 
+            border-right: 2px solid rgba(6, 182, 212, 0.2); 
             padding: 25px; z-index: 9999;
             display: flex; flex-direction: column;
         }
 
-        .logo { 
-            color: var(--neon-cyan); 
-            font-size: 1.8rem; 
-            font-weight: 800; 
-            display: flex; 
-            align-items: center; gap: 10px; 
-            margin-bottom: 40px;
-            text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
-        }
+        .logo-box { margin-bottom: 30px; }
+        .logo-main { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+        .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
 
         .user-profile {
             background: rgba(255, 255, 255, 0.03); 
@@ -64,7 +58,6 @@
             background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; color: white; font-size: 1.2rem;
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
         }
 
         .nav-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
@@ -73,18 +66,17 @@
             text-decoration: none; color: var(--text-dim); 
             padding: 14px 18px; border-radius: 15px;
             display: flex; align-items: center; gap: 12px; 
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: 0.3s;
             font-weight: 600;
         }
 
         .nav-link:hover, .nav-link.active {
             background: rgba(6, 182, 212, 0.1);
             color: var(--neon-cyan);
-            transform: translateX(5px);
             border-left: 4px solid var(--neon-cyan);
         }
 
-        /* CONTENIDO PRINCIPAL */
+        /* CONTENIDO */
         .main-content { 
             margin-left: 280px; padding: 40px 60px; 
             min-height: 100vh;
@@ -93,11 +85,10 @@
 
         .welcome-section h1 { 
             font-size: 2.5rem; font-weight: 800; margin: 0;
-            background: linear-gradient(to right, #fff, var(--neon-cyan));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            color: white;
         }
 
-        /* GRID DE ACCESOS RÁPIDOS */
+        /* GRID DE BOTONES ENTENDIBLES */
         .quick-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
@@ -109,21 +100,12 @@
             border-radius: 28px; text-align: center; 
             border: 1px solid rgba(255, 255, 255, 0.05); 
             transition: 0.4s ease; cursor: pointer;
-            position: relative; overflow: hidden;
         }
-
-        .mini-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
-            transform: translateX(-100%); transition: 0.6s;
-        }
-
-        .mini-card:hover::before { transform: translateX(100%); }
 
         .mini-card:hover { 
-            transform: translateY(-10px) scale(1.02); 
-            border-color: var(--neon-purple);
-            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.2); 
+            transform: translateY(-10px); 
+            border-color: var(--neon-cyan);
+            box-shadow: 0 15px 35px rgba(6, 182, 212, 0.2); 
         }
 
         .icon-square { 
@@ -133,12 +115,12 @@
             font-size: 1.6rem; 
         }
 
-        .bg-voto { background: rgba(139, 92, 246, 0.2); color: var(--neon-purple); box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
-        .bg-finanzas { background: rgba(16, 185, 129, 0.2); color: var(--success); box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
-        .bg-buzon { background: rgba(236, 72, 153, 0.2); color: var(--neon-pink); box-shadow: 0 0 15px rgba(236, 72, 153, 0.3); }
-        .bg-iniciativas { background: rgba(6, 182, 212, 0.2); color: var(--neon-cyan); box-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+        .bg-voto { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); }
+        .bg-finanzas { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .bg-buzon { background: rgba(236, 72, 153, 0.1); color: var(--neon-pink); }
+        .bg-iniciativas { background: rgba(139, 92, 246, 0.1); color: var(--neon-purple); }
 
-        /* TARJETA DE RESUMEN */
+        /* RESUMEN FINANCIERO */
         .summary-card { 
             background: rgba(30, 41, 59, 0.5); 
             backdrop-filter: blur(10px);
@@ -149,92 +131,88 @@
         .balance-display { 
             background: #0f172a; 
             border: 2px solid var(--success); 
-            border-radius: 30px; padding: 50px; 
+            border-radius: 30px; padding: 40px; 
             text-align: center; margin: 30px 0;
-            position: relative;
         }
 
         .balance-display h2 { 
-            font-size: 4.5rem; color: white; margin: 10px 0; 
-            text-shadow: 0 0 30px rgba(16, 185, 129, 0.5); 
-            letter-spacing: -2px;
+            font-size: 3.5rem; color: white; margin: 10px 0; 
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.3); 
         }
 
         .btn-logout {
             margin-top: auto;
             color: var(--error) !important;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.1) !important;
-            border-color: var(--error);
         }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="logo"><i class="fas fa-bolt"></i> VOX ADMIN</div>
+        <div class="logo-box">
+            <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+            <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
+        </div>
         
         <div class="user-profile">
             <div class="avatar-container" id="user-avatar-letra">U</div>
             <div class="user-info">
                 <strong id="user-name-display" style="display:block; font-size: 0.9rem;">Cargando...</strong>
-                <span style="font-size: 0.75rem; color: var(--success);"><i class="fas fa-check-circle"></i> Online</span>
+                <span style="font-size: 0.75rem; color: var(--success);"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Conectado</span>
             </div>
         </div>
 
         <nav class="nav-menu">
             <a href="index.html" class="nav-link active"><i class="fas fa-house"></i> Inicio</a>
-            <a href="votaciones.html" class="nav-link"><i class="fas fa-fire"></i> Votaciones</a>
-            <a href="finanzas.html" class="nav-link"><i class="fas fa-wallet"></i> Finanzas</a>
-            <a href="buzon.html" class="nav-link"><i class="fas fa-envelope"></i> Buzón</a>
-            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+            <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> Centro de Votos</a>
+            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> Transparencia</a>
+            <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> Sugerencias</a>
+            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Proyectos</a>
             <a href="#" class="nav-link btn-logout" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                <i class="fas fa-power-off"></i> Salir del Sistema
             </a>
         </nav>
     </aside>
 
     <main class="main-content">
         <header class="welcome-section">
-            <p id="current-date" style="color: var(--neon-cyan); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px;"></p>
-            <h1>Bienvenido de nuevo, <span id="user-greeting">User</span></h1>
+            <p id="current-date" style="color: var(--neon-cyan); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;"></p>
+            <h1>Bienvenido, <span id="user-greeting">Usuario</span></h1>
+            <p style="color: var(--text-dim);">¿Qué deseas revisar hoy en tu comunidad?</p>
         </header>
 
         <div class="quick-grid">
             <div class="mini-card" onclick="location.href='votaciones.html'">
-                <div class="icon-square bg-voto"><i class="fas fa-vote-yea"></i></div>
+                <div class="icon-square bg-voto"><i class="fas fa-check-to-slot"></i></div>
                 <h4 style="margin: 0; color: white;">Votaciones</h4>
-                <span style="font-size: 0.75rem; color: var(--text-dim);">Toma el control</span>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">Tu opinión cuenta</span>
             </div>
             <div class="mini-card" onclick="location.href='finanzas.html'">
-                <div class="icon-square bg-finanzas"><i class="fas fa-chart-line"></i></div>
-                <h4 style="margin: 0; color: white;">Finanzas</h4>
-                <span style="font-size: 0.75rem; color: var(--text-dim);">Balance total</span>
+                <div class="icon-square bg-finanzas"><i class="fas fa-hand-holding-dollar"></i></div>
+                <h4 style="margin: 0; color: white;">Cuentas Claras</h4>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">Uso de fondos</span>
             </div>
             <div class="mini-card" onclick="location.href='buzon.html'">
-                <div class="icon-square bg-buzon"><i class="fas fa-user-secret"></i></div>
-                <h4 style="margin: 0; color: white;">Buzón</h4>
-                <span style="font-size: 0.75rem; color: var(--text-dim);">Reporte anónimo</span>
+                <div class="icon-square bg-buzon"><i class="fas fa-comment-medical"></i></div>
+                <h4 style="margin: 0; color: white;">Sugerencias</h4>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">Buzón abierto</span>
             </div>
             <div class="mini-card" onclick="location.href='iniciativas.html'">
-                <div class="icon-square bg-iniciativas"><i class="fas fa-lightbulb"></i></div>
-                <h4 style="margin: 0; color: white;">Iniciativas</h4>
-                <span style="font-size: 0.75rem; color: var(--text-dim);">Nuevas ideas</span>
+                <div class="icon-square bg-iniciativas"><i class="fas fa-rocket"></i></div>
+                <h4 style="margin: 0; color: white;">Proyectos</h4>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">Nuevas ideas</span>
             </div>
         </div>
 
         <div class="summary-card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin:0; color: white; font-size: 1.5rem; font-weight: 800;">💰 Estatus Financiero</h3>
-                <a href="finanzas.html" style="color: var(--neon-cyan); text-decoration: none; font-weight: 700; font-size: 0.9rem;">
-                    DETALLE COMPLETO <i class="fas fa-arrow-right"></i>
+                <h3 style="margin:0; color: white; font-size: 1.3rem; font-weight: 800;">📉 Resumen de Transparencia</h3>
+                <a href="finanzas.html" style="color: var(--neon-cyan); text-decoration: none; font-weight: 700; font-size: 0.8rem;">
+                    VER TODO <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
             <div class="balance-display">
-                <span style="color: var(--success); font-weight: 800; font-size: 0.85rem; letter-spacing: 3px;">FONDOS DISPONIBLES</span>
+                <span style="color: var(--success); font-weight: 800; font-size: 0.75rem; letter-spacing: 2px;">SALDO ACTUAL DE LA COMUNIDAD</span>
                 <h2 id="index-balance-h2">$0.00</h2>
             </div>
         </div>
@@ -256,11 +234,9 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // FECHA ACTUAL
-        const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const opciones = { weekday: 'long', day: 'numeric', month: 'long' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-ES', opciones);
 
-        // PROTECCIÓN Y CARGA
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 document.body.style.display = "block";
@@ -268,7 +244,6 @@
                 document.getElementById('user-name-display').innerText = name;
                 document.getElementById('user-greeting').innerText = name.split(' ')[0];
                 document.getElementById('user-avatar-letra').innerText = name.charAt(0).toUpperCase();
-                
                 escucharFinanzasIndex();
             } else {
                 window.location.href = "login.html";

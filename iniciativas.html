@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciativas | Vox Schola</title>
+    <title>Proyectos | Comunidad Vox</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
@@ -18,32 +18,38 @@
             --text-dim: #94a3b8;
         }
 
+        * { box-sizing: border-box; }
+
         body { 
             margin: 0; background-color: var(--bg-dark); 
             color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif;
-            display: flex; min-height: 100vh;
+            display: flex; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* SIDEBAR CONSISTENTE */
+        /* SIDEBAR UNIFICADO */
         .sidebar { 
             width: 280px; height: 100vh; background: var(--sidebar-bg); 
-            position: fixed; left: 0; top: 0; border-right: 2px solid rgba(139, 92, 246, 0.2); 
+            position: fixed; left: 0; top: 0; border-right: 2px solid rgba(6, 182, 212, 0.2); 
             padding: 25px; z-index: 9999; display: flex; flex-direction: column;
         }
-        .logo { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin-bottom: 40px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.5); }
+        
+        .logo-box { margin-bottom: 30px; }
+        .logo-main { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+        .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
+
         .nav-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
         .nav-link {
             text-decoration: none; color: var(--text-dim); padding: 14px 18px; border-radius: 15px;
             display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600;
         }
-        .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
+        .nav-link:hover, .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
         /* CONTENIDO PRINCIPAL */
         .main-content { margin-left: 280px; padding: 40px 60px; flex-grow: 1; background: radial-gradient(circle at bottom left, #1e1b4b, #020617); }
 
-        .welcome-section h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; background: linear-gradient(to right, #fff, var(--neon-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .welcome-section h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; color: white; }
 
-        /* QUICK ACTIONS */
+        /* BOTONES DE ACCIÓN */
         .quick-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 20px; margin: 30px 0 50px 0; }
         
         .btn-crear-card {
@@ -58,71 +64,82 @@
             border-radius: 25px; padding: 20px; display: flex; align-items: center; gap: 15px;
         }
 
-        /* IDEA CARDS */
+        /* TARJETAS DE IDEAS */
         .idea-card {
             background: rgba(30, 41, 59, 0.8); border-radius: 30px; padding: 25px;
             border: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column; gap: 15px;
             transition: 0.3s;
         }
-        .idea-card:hover { border-color: var(--neon-cyan); transform: scale(1.02); }
+        .idea-card:hover { border-color: var(--neon-cyan); transform: translateY(-5px); }
 
         .tag-estudiantil {
-            background: rgba(6, 182, 212, 0.2); color: var(--neon-cyan);
+            background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan);
             padding: 5px 15px; border-radius: 10px; font-size: 0.7rem; font-weight: 800; width: fit-content;
+            border: 1px solid rgba(6, 182, 212, 0.3);
         }
 
-        /* PROGRESS BAR NEON */
-        .progress-bar-glow { height: 12px; background: #0f172a; border-radius: 20px; overflow: hidden; }
+        /* PROGRESS BAR */
+        .progress-bar-container { height: 10px; background: rgba(15, 23, 42, 0.8); border-radius: 20px; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); box-shadow: 0 0 15px var(--neon-cyan); transition: width 1s ease; }
 
         .btn-apoyar-neon {
             background: #2563eb; color: white; border: none; padding: 15px; border-radius: 15px;
             font-weight: 800; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; gap: 8px;
         }
-        .btn-apoyar-neon:hover { background: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+        .btn-apoyar-neon:hover { background: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
 
-        /* MODAL STYLE */
+        /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 10000; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card-bg); padding: 40px; border-radius: 35px; width: 90%; max-width: 500px; border: 1px solid var(--neon-purple); }
-        .modal input, .modal textarea { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 15px; border: 1px solid #334155; background: #0f172a; color: white; }
+        .modal-content { background: var(--card-bg); padding: 40px; border-radius: 35px; width: 95%; max-width: 500px; border: 1px solid var(--neon-purple); }
+        .modal input, .modal textarea { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 15px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit; }
 
-        .card-archivada { opacity: 0.4; filter: grayscale(1); }
+        .card-archivada { opacity: 0.5; filter: grayscale(0.8); }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="logo"><i class="fas fa-bolt"></i> VOX ADMIN</div>
+        <div class="logo-box">
+            <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+            <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
+        </div>
         <nav class="nav-menu">
             <a href="index.html" class="nav-link"><i class="fas fa-house"></i> Inicio</a>
-            <a href="votaciones.html" class="nav-link"><i class="fas fa-fire"></i> Votaciones</a>
-            <a href="finanzas.html" class="nav-link"><i class="fas fa-wallet"></i> Finanzas</a>
-            <a href="buzon.html" class="nav-link"><i class="fas fa-envelope"></i> Buzón</a>
-            <a href="iniciativas.html" class="nav-link active"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+            <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> Centro de Votos</a>
+            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> Transparencia</a>
+            <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> Sugerencias</a>
+            <a href="iniciativas.html" class="nav-link active"><i class="fas fa-lightbulb"></i> Proyectos</a>
         </nav>
     </aside>
 
     <main class="main-content">
         <header class="welcome-section">
-            <h1>Laboratorio de Ideas 💡</h1>
-            <p style="color: var(--text-dim);">Llega a los <strong style="color: var(--neon-cyan);">200 apoyos</strong> para hacer realidad tu propuesta.</p>
+            <p style="color: var(--neon-cyan); font-weight: 800; letter-spacing: 2px; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px;">Co-Creación Comunitaria</p>
+            <h1>Laboratorio de Ideas</h1>
+            <p style="color: var(--text-dim);">Llega a los <strong style="color: var(--neon-cyan);">200 apoyos</strong> para convertir una idea en un proyecto oficial.</p>
         </header>
 
         <div class="quick-grid">
             <button class="btn-crear-card" onclick="document.getElementById('modalIdea').style.display='flex'">
                 <i class="fas fa-plus-circle" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                <h3 style="margin: 0;">Lanzar Nueva Idea</h3>
-                <p style="font-size: 0.8rem; opacity: 0.8;">Inspira a la comunidad</p>
+                <h3 style="margin: 0;">Proponer Idea</h3>
+                <p style="font-size: 0.8rem; opacity: 0.8;">Haz que las cosas sucedan</p>
             </button>
 
             <div class="mini-card">
                 <i class="fas fa-graduation-cap" style="color: var(--neon-cyan); font-size: 1.5rem;"></i>
-                <h4 style="margin: 0;">Academia</h4>
+                <div>
+                    <h4 style="margin: 0;">Academia</h4>
+                    <span style="font-size: 0.7rem; color: var(--text-dim);">Mejoras educativas</span>
+                </div>
             </div>
 
             <div class="mini-card">
-                <i class="fas fa-pizza-slice" style="color: var(--neon-pink); font-size: 1.5rem;"></i>
-                <h4 style="margin: 0;">Diversión</h4>
+                <i class="fas fa-basketball-ball" style="color: var(--neon-pink); font-size: 1.5rem;"></i>
+                <div>
+                    <h4 style="margin: 0;">Deportes</h4>
+                    <span style="font-size: 0.7rem; color: var(--text-dim);">Cultura y salud</span>
+                </div>
             </div>
         </div>
 
@@ -130,20 +147,23 @@
             </div>
 
         <div class="historial-section" style="margin-top: 60px;">
-            <h2 style="color: var(--text-dim); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px;"><i class="fas fa-archive"></i> El Limbo de Ideas</h2>
-            <div id="contenedor-historial" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 20px;"></div>
+            <h2 style="color: var(--text-dim); font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;"><i class="fas fa-archive"></i> Archivo de Ideas</h2>
+            <div id="contenedor-historial" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 20px;">
+                </div>
         </div>
     </main>
 
     <div id="modalIdea" class="modal">
         <div class="modal-content">
             <h2 style="margin-top: 0; color: var(--neon-cyan);">Nueva Propuesta 🚀</h2>
-            <label style="font-size: 0.8rem; color: var(--text-dim);">Título de la iniciativa</label>
-            <input type="text" id="tituloIdea" placeholder="Ej: Torneo de E-sports">
-            <label style="font-size: 0.8rem; color: var(--text-dim);">Explicación</label>
-            <textarea id="descIdea" rows="4" placeholder="¿Cómo beneficiará esto a los alumnos?"></textarea>
-            <button onclick="crearNuevaIniciativa()" class="btn-enviar" style="background: var(--neon-purple); color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer;">PUBLICAR IDEA</button>
-            <button onclick="document.getElementById('modalIdea').style.display='none'" style="background: transparent; color: var(--text-dim); border: none; width: 100%; margin-top: 15px; cursor: pointer;">Cerrar</button>
+            <label style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">Título de la iniciativa</label>
+            <input type="text" id="tituloIdea" placeholder="Ej: Tech Lab para la biblioteca">
+            
+            <label style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">Explicación detallada</label>
+            <textarea id="descIdea" rows="4" placeholder="¿Cómo ayuda esto a los alumnos y padres?"></textarea>
+            
+            <button onclick="crearNuevaIniciativa()" style="background: var(--neon-purple); color: white; border: none; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; cursor: pointer; text-transform: uppercase;">LANZAR PROPUESTA</button>
+            <button onclick="document.getElementById('modalIdea').style.display='none'" style="background: transparent; color: var(--text-dim); border: none; width: 100%; margin-top: 15px; cursor: pointer; font-weight: 600;">Cancelar</button>
         </div>
     </div>
 
@@ -162,19 +182,22 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        
         const USER_ID = localStorage.getItem('user_id_vox') || 'user_' + Math.random().toString(36).substr(2, 9);
         localStorage.setItem('user_id_vox', USER_ID);
 
         window.crearNuevaIniciativa = async () => {
             const t = document.getElementById('tituloIdea').value;
             const d = document.getElementById('descIdea').value;
-            if(!t || !d) return alert("Describe tu idea antes de lanzarla.");
+            if(!t || !d) return alert("Por favor completa los campos.");
 
             await addDoc(collection(db, "iniciativas"), {
-                titulo: t, descripcion: d, categoria: "ESTUDIANTIL", 
+                titulo: t, descripcion: d, categoria: "COMUNITARIO", 
                 apoyos: 0, fechaCreacion: Date.now(), votantes: []
             });
             document.getElementById('modalIdea').style.display = 'none';
+            document.getElementById('tituloIdea').value = "";
+            document.getElementById('descIdea').value = "";
         };
 
         window.votarIniciativa = async (id) => {
@@ -183,7 +206,7 @@
             const data = docSnap.data();
 
             if (data.votantes && data.votantes.includes(USER_ID)) {
-                return alert("¡Ya diste tu apoyo a esta causa!");
+                return alert("Ya has apoyado esta iniciativa.");
             }
 
             await updateDoc(docRef, { 
@@ -207,14 +230,14 @@
                 const cardHTML = `
                     <div class="idea-card ${esExpirada ? 'card-archivada' : ''}">
                         <div class="tag-estudiantil">${data.categoria}</div>
-                        <h3 style="margin: 0;">${data.titulo}</h3>
+                        <h3 style="margin: 0; color: white;">${data.titulo}</h3>
                         <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.5;">${data.descripcion}</p>
-                        <div class="progress-bar-glow"><div class="progress-fill" style="width: ${porcentaje}%"></div></div>
+                        <div class="progress-bar-container"><div class="progress-fill" style="width: ${porcentaje}%"></div></div>
                         <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800;">
                             <span>${data.apoyos} APOYOS</span>
-                            <span style="color: var(--neon-cyan);">${esExpirada ? 'FINALIZADO' : diasRestantes + ' DÍAS'}</span>
+                            <span style="color: var(--neon-cyan);">${esExpirada ? 'FINALIZADO' : diasRestantes + ' DÍAS RESTANTES'}</span>
                         </div>
-                        ${!esExpirada ? `<button class="btn-apoyar-neon" onclick="votarIniciativa('${id}')"><i class="fas fa-rocket"></i> APOYAR</button>` : ''}
+                        ${!esExpirada ? `<button class="btn-apoyar-neon" onclick="votarIniciativa('${id}')"><i class="fas fa-heart"></i> APOYAR CAUSA</button>` : ''}
                     </div>`;
                 esExpirada ? historial.innerHTML += cardHTML : activas.innerHTML += cardHTML;
             });
