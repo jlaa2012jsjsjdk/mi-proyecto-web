@@ -148,89 +148,102 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
-        authDomain: "voxschola.firebaseapp.com",
-        projectId: "voxschola",
-        storageBucket: "voxschola.firebasestorage.app",
-        messagingSenderId: "730366058404",
-        appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+    authDomain: "voxschola.firebaseapp.com",
+    projectId: "voxschola",
+    storageBucket: "voxschola.firebasestorage.app",
+    messagingSenderId: "730366058404",
+    appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    // Identificador único para este navegador
-    if(!localStorage.getItem('user_id_vox')) {
-        localStorage.setItem('user_id_vox', 'user_' + Math.random().toString(36).substr(2, 9));
-    }
-    const USER_ID = localStorage.getItem('user_id_vox');
+// Genera un ID único para el navegador del alumno
+if(!localStorage.getItem('user_id_vox')) {
+    localStorage.setItem('user_id_vox', 'user_' + Math.random().toString(36).substr(2, 9));
+}
+const USER_ID = localStorage.getItem('user_id_vox');
 
-    window.registrarVoto = async (id, votosActuales, meta) => {
-        if (votosActuales >= meta) return alert("¡Meta alcanzada! Gracias por participar.");
-        
-        const ref = doc(db, "votaciones", id);
-        
-        try {
-            const docSnap = await getDoc(ref);
-            const data = docSnap.data();
+// FUNCIÓN PARA VOTAR (Maneja Opción A o B con nombres personalizados)
+window.registrarVoto = async (id, opcionElegida) => {
+    const ref = doc(db, "votaciones", id);
+    try {
+        const docSnap = await getDoc(ref);
+        const data = docSnap.data();
 
-            // Verificamos si el usuario ya está en la lista de votantes de esta votación
-            if (data.votantes && data.votantes.includes(USER_ID)) {
-                alert("Ya has registrado tu voto en esta consulta.");
-                return;
-            }
-
-            // Actualizamos sumando el voto y agregando al usuario a la lista
-            await updateDoc(ref, { 
-                votos: votosActuales + 1,
-                votantes: arrayUnion(USER_ID)
-            });
-            
-            alert("¡Voto registrado!");
-
-        } catch (error) {
-            console.error("Error al votar:", error);
+        if (data.votantes && data.votantes.includes(USER_ID)) {
+            alert("Ya has votado en esta consulta.");
+            return;
         }
-    };
 
-    onSnapshot(collection(db, "votaciones"), (snapshot) => {
-        const contenedor = document.getElementById('contenedor-votaciones');
-        contenedor.innerHTML = "";
+        const actualizacion = {};
+        if (opcionElegida === 'A') {
+            actualizacion["votosOpA"] = (data.votosOpA || 0) + 1;
+        } else {
+            actualizacion["votosOpB"] = (data.votosOpB || 0) + 1;
+        }
+        
+        actualizacion["totalVotos"] = (data.totalVotos || 0) + 1;
+        actualizacion["votantes"] = arrayUnion(USER_ID);
 
-        snapshot.forEach((d) => {
-            const data = d.data();
-            const id = d.id;
-            const meta = data.meta || 100;
-            const votos = data.votos || 0;
-            const porcentaje = Math.min(Math.round((votos / meta) * 100), 100);
+        await updateDoc(ref, actualizacion);
+        alert("¡Voto registrado!");
+    } catch (e) { console.error(e); }
+};
 
-            contenedor.innerHTML += `
-                <div class="vote-card">
-                    <span class="category-tag">${data.categoria || 'General'}</span>
-                    <h3 style="margin: 15px 0 5px 0; font-size: 1.2rem;">${data.titulo}</h3>
-                    <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 15px;">Termina en ${data.dias} días</p>
-                    
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${porcentaje}%;"></div>
+// RENDERIZADO EN TIEMPO REAL (Mantiene tu diseño de tarjetas)
+onSnapshot(collection(db, "votaciones"), (snapshot) => {
+    const contenedor = document.getElementById('contenedor-votaciones');
+    contenedor.innerHTML = "";
+
+    snapshot.forEach((d) => {
+        const data = d.data();
+        const id = d.id;
+        const total = data.totalVotos || 0;
+        const porcA = total > 0 ? Math.round(((data.votosOpA || 0) / total) * 100) : 0;
+        const porcB = total > 0 ? Math.round(((data.votosOpB || 0) / total) * 100) : 0;
+
+        contenedor.innerHTML += `
+            <div class="vote-card">
+                <span class="category-tag">${data.categoria || 'GENERAL'}</span>
+                <h3 style="color: white; margin: 15px 0 5px 0;">${data.titulo}</h3>
+                <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 15px;">Termina en pocos días</p>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color: white;">
+                        <span>${data.nombreOpA || 'Sí'}</span>
+                        <span class="percentage-text" style="color: #ec4899;">${porcA}%</span>
                     </div>
-
-                    <div class="vote-card-footer">
-                        <span><i class="fas fa-users"></i> ${votos} participaciones</span>
-                        <span class="percentage-text">${porcentaje}%</span>
+                    <div class="progress-container" style="background: #334155; height: 10px; border-radius: 10px; overflow: hidden; margin: 5px 0;">
+                        <div class="progress-bar" style="width: ${porcA}%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #ec4899);"></div>
                     </div>
-                    
-                    <div style="margin-top: 20px; text-align: right;">
-                        <button class="btn-votar-link" onclick="registrarVoto('${id}', ${votos}, ${meta})">
-                            Votar <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
+                    <button class="btn-votar-link" style="background: #8b5cf6; border: none; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer;" 
+                        onclick="registrarVoto('${id}', 'A')">Votar</button>
                 </div>
-            `;
-        });
+
+                <div style="margin-bottom: 10px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color: white;">
+                        <span>${data.nombreOpB || 'No'}</span>
+                        <span class="percentage-text" style="color: #ec4899;">${porcB}%</span>
+                    </div>
+                    <div class="progress-container" style="background: #334155; height: 10px; border-radius: 10px; overflow: hidden; margin: 5px 0;">
+                        <div class="progress-bar" style="width: ${porcB}%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #ec4899);"></div>
+                    </div>
+                    <button class="btn-votar-link" style="background: #8b5cf6; border: none; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer;" 
+                        onclick="registrarVoto('${id}', 'B')">Votar</button>
+                </div>
+
+                <div class="vote-card-footer" style="margin-top: 15px; font-size: 0.8rem; color: #94a3b8;">
+                    <span><i class="fas fa-users"></i> ${total} participaciones</span>
+                </div>
+            </div>
+        `;
     });
+});
 </script>
 </body>
 </html>
