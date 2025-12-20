@@ -79,21 +79,21 @@
 
     <div class="app-container" style="display: flex;">
         <aside class="sidebar">
-            <div class="logo"><i class="fas fa-user-shield"></i> Admin Panel</div>
-            <nav class="nav-menu">
-                <a href="admin-graficas.html" class="nav-link"><i class="fas fa-chart-pie"></i> Estadísticas</a>
-                <a href="admin-votaciones.html" class="nav-link"><i class="fas fa-poll-h"></i> Votaciones</a>
-                <a href="admin-finanzas.html" class="nav-link active"><i class="fas fa-cash-register"></i> Finanzas</a>
-                <a href="admin-buzon.html" class="nav-link"><i class="fas fa-inbox"></i> Buzón de Quejas</a>
-                <a href="admin-iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
-                <a href="index.html" class="nav-link return-link">
-    <i class="fas fa-arrow-left"></i> Volver al Sitio
-</a>
-                <div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                    <a href="index.html" class="nav-link" style="color: #f87171;"><i class="fas fa-arrow-left"></i> Salir al Sitio</a>
-                </div>
-            </nav>
-        </aside>
+    <div class="logo"><i class="fas fa-user-shield"></i> Admin Panel</div>
+    <nav class="nav-menu">
+        <a href="admin-graficas.html" class="nav-link"><i class="fas fa-chart-pie"></i> Estadísticas</a>
+        <a href="admin-votaciones.html" class="nav-link"><i class="fas fa-poll-h"></i> Votaciones</a>
+        <a href="admin-finanzas.html" class="nav-link active"><i class="fas fa-cash-register"></i> Finanzas</a>
+        <a href="admin-buzon.html" class="nav-link"><i class="fas fa-inbox"></i> Buzón de Quejas</a>
+        <a href="admin-iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+        
+        <div style="margin-top: 50px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 20px;">
+            <a href="index.html" class="nav-link" style="color: #ef4444; font-weight: bold;">
+                <i class="fas fa-arrow-left"></i> VOLVER AL SITIO
+            </a>
+        </div>
+    </nav>
+</aside>
 
         <main class="main-content" style="flex-grow: 1;">
             <div class="admin-section">
@@ -120,7 +120,7 @@
                     <div class="form-grid">
                         <div>
                             <label style="font-size: 0.8rem; font-weight: bold;">Concepto</label>
-                            <input type="text" id="desc" placeholder="Ej: Venta de boletos, Compra de balones...">
+                            <input type="text" id="desc" placeholder="Ej: Venta de boletos...">
                         </div>
                         <div>
                             <label style="font-size: 0.8rem; font-weight: bold;">Monto</label>
@@ -148,8 +148,7 @@
                                 <th>Acción</th>
                             </tr>
                         </thead>
-                        <tbody id="lista-finanzas">
-                            </tbody>
+                        <tbody id="lista-finanzas"></tbody>
                     </table>
                 </div>
             </div>
@@ -171,12 +170,49 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // CARGA EN TIEMPO REAL (onSnapshot)
+        function cargarFinanzas() {
+            db.collection("finanzas").orderBy("fecha", "desc").onSnapshot((snapshot) => {
+                const contenedor = document.getElementById('lista-finanzas');
+                let ingresos = 0, gastos = 0;
+                
+                contenedor.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const f = doc.data();
+                    const monto = parseFloat(f.monto) || 0;
+                    const fecha = f.fecha ? f.fecha.toDate().toLocaleDateString() : '---';
+
+                    if(f.tipo === 'ingreso') ingresos += monto;
+                    else gastos += monto;
+
+                    contenedor.innerHTML += `
+                        <tr>
+                            <td>${fecha}</td>
+                            <td>${f.descripcion}</td>
+                            <td class="tipo-${f.tipo}">${f.tipo.toUpperCase()}</td>
+                            <td>$${monto.toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
+                            <td>
+                                <button onclick="eliminar('${doc.id}')" style="border:none; background:none; color:#ef4444; cursor:pointer;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('total-ingresos').innerText = `$${ingresos.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+                document.getElementById('total-gastos').innerText = `$${gastos.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+                document.getElementById('total-balance').innerText = `$${(ingresos - gastos).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            });
+        }
+
         async function agregarMovimiento() {
             const desc = document.getElementById('desc').value;
-            const monto = parseFloat(document.getElementById('monto').value);
+            const montoInput = document.getElementById('monto').value;
+            const monto = parseFloat(montoInput);
             const tipo = document.getElementById('tipo').value;
 
-            if(!desc || !monto) return alert("Completa los datos");
+            if(!desc || isNaN(monto)) return alert("Por favor, ingresa un concepto y un monto válido.");
 
             await db.collection("finanzas").add({
                 descripcion: desc,
@@ -187,43 +223,11 @@
 
             document.getElementById('desc').value = "";
             document.getElementById('monto').value = "";
-            cargarFinanzas();
-        }
-
-        async function cargarFinanzas() {
-            const snapshot = await db.collection("finanzas").orderBy("fecha", "desc").get();
-            const contenedor = document.getElementById('lista-finanzas');
-            let ingresos = 0, gastos = 0;
-            
-            contenedor.innerHTML = "";
-            snapshot.forEach(doc => {
-                const f = doc.data();
-                const monto = parseFloat(f.monto);
-                const fecha = f.fecha ? f.fecha.toDate().toLocaleDateString() : '---';
-
-                if(f.tipo === 'ingreso') ingresos += monto;
-                else gastos += monto;
-
-                contenedor.innerHTML += `
-                    <tr>
-                        <td>${fecha}</td>
-                        <td>${f.descripcion}</td>
-                        <td class="tipo-${f.tipo}">${f.tipo.toUpperCase()}</td>
-                        <td>$${monto.toFixed(2)}</td>
-                        <td><button onclick="eliminar('${doc.id}')" style="border:none; color:red; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById('total-ingresos').innerText = `$${ingresos.toFixed(2)}`;
-            document.getElementById('total-gastos').innerText = `$${gastos.toFixed(2)}`;
-            document.getElementById('total-balance').innerText = `$${(ingresos - gastos).toFixed(2)}`;
         }
 
         async function eliminar(id) {
-            if(confirm("¿Borrar este registro?")) {
+            if(confirm("¿Estás seguro de eliminar este registro?")) {
                 await db.collection("finanzas").doc(id).delete();
-                cargarFinanzas();
             }
         }
 

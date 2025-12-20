@@ -46,7 +46,6 @@
         .summary-card { background: var(--card-bg); border-radius: 35px; padding: 40px; border: 1px solid rgba(255, 255, 255, 0.05); }
         .balance-display { background: #0f172a; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 28px; padding: 45px; text-align: center; margin: 25px 0; }
         .balance-display h2 { font-size: 4rem; color: white; margin: 10px 0; text-shadow: 0 0 25px rgba(16, 185, 129, 0.4); }
-        .stats-row { display: flex; justify-content: space-around; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; }
     </style>
 </head>
 <body>
@@ -80,7 +79,7 @@
             <div class="mini-card" onclick="location.href='votaciones.html'">
                 <div class="icon-square bg-voto"><i class="fas fa-vote-yea"></i></div>
                 <h4 style="margin: 0; color: white;">Votaciones</h4>
-                <span style="font-size: 0.75rem; color: var(--text-dim);">Particpa ahora</span>
+                <span style="font-size: 0.75rem; color: var(--text-dim);">Participa ahora</span>
             </div>
             <div class="mini-card" onclick="location.href='finanzas.html'">
                 <div class="icon-square bg-finanzas"><i class="fas fa-chart-line"></i></div>
@@ -125,17 +124,42 @@
             appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
         };
         firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // PROTECCIÓN DE RUTA
+        // PROTECCIÓN DE RUTA Y CARGA DE USUARIO
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 document.body.style.display = "block";
                 document.getElementById('user-name').innerText = user.displayName;
                 document.getElementById('user-photo').src = user.photoURL || "https://via.placeholder.com/40";
+                
+                // Cargar finanzas solo si el usuario está logueado
+                escucharFinanzasIndex();
             } else {
                 window.location.href = "login.html";
             }
         });
+
+        // FUNCIÓN PARA ACTUALIZAR EL BALANCE EN TIEMPO REAL
+        function escucharFinanzasIndex() {
+            db.collection("finanzas").onSnapshot((snapshot) => {
+                let ingresos = 0;
+                let gastos = 0;
+                
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const monto = parseFloat(data.monto) || 0;
+                    if (data.tipo === "ingreso") {
+                        ingresos += monto;
+                    } else {
+                        gastos += monto;
+                    }
+                });
+                
+                const total = ingresos - gastos;
+                document.getElementById('index-balance-h2').innerText = `$${total.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            });
+        }
 
         function logout() {
             firebase.auth().signOut().then(() => window.location.href = "login.html");
