@@ -193,76 +193,102 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, query, orderBy, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CONFIGURACIÓN FIREBASE (Mantén la tuya aquí)
-        const firebaseConfig = {
-            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
-            authDomain: "voxschola.firebaseapp.com",
-            projectId: "voxschola",
-            storageBucket: "voxschola.firebasestorage.app",
-            messagingSenderId: "730366058404",
-            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+        authDomain: "voxschola.firebaseapp.com",
+        projectId: "voxschola",
+        storageBucket: "voxschola.firebasestorage.app",
+        messagingSenderId: "730366058404",
+        appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        window.crearNuevaIniciativa = async () => {
-            const t = document.getElementById('tituloIdea').value;
-            const d = document.getElementById('descIdea').value;
-            if(!t || !d) return alert("Completa los datos");
+    // Identificador simple para este navegador/usuario
+    if(!localStorage.getItem('user_id_vox')) {
+        localStorage.setItem('user_id_vox', 'user_' + Math.random().toString(36).substr(2, 9));
+    }
+    const USER_ID = localStorage.getItem('user_id_vox');
 
-            await addDoc(collection(db, "iniciativas"), {
-                titulo: t, descripcion: d, categoria: "ESTUDIANTIL", apoyos: 0, fechaCreacion: Date.now()
-            });
-            document.getElementById('modalIdea').style.display = 'none';
-        };
+    window.crearNuevaIniciativa = async () => {
+        const t = document.getElementById('tituloIdea').value;
+        const d = document.getElementById('descIdea').value;
+        if(!t || !d) return alert("Completa los datos");
 
-        window.votarIniciativa = async (id, apoyos) => {
-            await updateDoc(doc(db, "iniciativas", id), { apoyos: apoyos + 1 });
-        };
-
-        onSnapshot(query(collection(db, "iniciativas"), orderBy("fechaCreacion", "desc")), (snap) => {
-            const activas = document.getElementById('contenedor-activas');
-            const historial = document.getElementById('contenedor-historial');
-            activas.innerHTML = ""; historial.innerHTML = "";
-
-            snap.forEach((s) => {
-                const data = s.data();
-                const id = s.id;
-                const diasRestantes = 30 - Math.floor((Date.now() - data.fechaCreacion) / (1000 * 60 * 60 * 24));
-                const esExpirada = diasRestantes <= 0 && data.apoyos < 200;
-                const porcentaje = Math.min((data.apoyos / 200) * 100, 100);
-
-                const cardHTML = `
-                    <div class="idea-card ${esExpirada ? 'card-archivada' : ''}">
-                        <div class="tag-estudiantil">${data.categoria}</div>
-                        <h3 style="margin: 5px 0;">${data.titulo}</h3>
-                        <p style="font-size: 0.85rem; color: var(--text-dim); flex-grow: 1;">${data.descripcion}</p>
-                        
-                        <div class="progress-bar-glow">
-                            <div class="progress-fill" style="width: ${porcentaje}%"></div>
-                        </div>
-
-                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; color: white;">
-                            <span>${data.apoyos} APOYOS</span>
-                            <span style="color: var(--accent-cyan);">${esExpirada ? 'EXPIRADO' : diasRestantes + ' DÍAS REST.'}</span>
-                        </div>
-
-                        ${!esExpirada ? `
-                            <button class="btn-apoyar-neon" onclick="votarIniciativa('${id}', ${data.apoyos})">
-                                <i class="fas fa-arrow-up"></i> Apoyar esta idea
-                            </button>
-                        ` : ''}
-                    </div>
-                `;
-
-                if(esExpirada) historial.innerHTML += cardHTML;
-                else activas.innerHTML += cardHTML;
-            });
+        await addDoc(collection(db, "iniciativas"), {
+            titulo: t, 
+            descripcion: d, 
+            categoria: "ESTUDIANTIL", 
+            apoyos: 0, 
+            fechaCreacion: Date.now(),
+            votantes: [] // Inicializamos lista de votantes vacía
         });
-    </script>
+        document.getElementById('modalIdea').style.display = 'none';
+        document.getElementById('tituloIdea').value = "";
+        document.getElementById('descIdea').value = "";
+    };
+
+    window.votarIniciativa = async (id) => {
+        const docRef = doc(db, "iniciativas", id);
+        const docSnap = await getDoc(docRef);
+        const data = docSnap.data();
+
+        // Verificamos si el ID de este usuario ya está en el array de la base de datos
+        if (data.votantes && data.votantes.includes(USER_ID)) {
+            alert("Ya has apoyado esta iniciativa anteriormente.");
+            return;
+        }
+
+        // Si no ha votado, incrementamos apoyos y agregamos su ID al array
+        await updateDoc(docRef, { 
+            apoyos: data.apoyos + 1,
+            votantes: arrayUnion(USER_ID)
+        });
+    };
+
+    onSnapshot(query(collection(db, "iniciativas"), orderBy("fechaCreacion", "desc")), (snap) => {
+        const activas = document.getElementById('contenedor-activas');
+        const historial = document.getElementById('contenedor-historial');
+        activas.innerHTML = ""; historial.innerHTML = "";
+
+        snap.forEach((s) => {
+            const data = s.data();
+            const id = s.id;
+            const diasRestantes = 30 - Math.floor((Date.now() - (data.fechaCreacion || Date.now())) / (1000 * 60 * 60 * 24));
+            const esExpirada = diasRestantes <= 0 && data.apoyos < 200;
+            const porcentaje = Math.min((data.apoyos / 200) * 100, 100);
+
+            const cardHTML = `
+                <div class="idea-card ${esExpirada ? 'card-archivada' : ''}">
+                    <div class="tag-estudiantil">${data.categoria}</div>
+                    <h3 style="margin: 5px 0;">${data.titulo}</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-dim); flex-grow: 1;">${data.descripcion}</p>
+                    
+                    <div class="progress-bar-glow">
+                        <div class="progress-fill" style="width: ${porcentaje}%"></div>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; color: white;">
+                        <span>${data.apoyos} APOYOS</span>
+                        <span style="color: var(--accent-cyan);">${esExpirada ? 'EXPIRADO' : diasRestantes + ' DÍAS REST.'}</span>
+                    </div>
+
+                    ${!esExpirada ? `
+                        <button class="btn-apoyar-neon" onclick="votarIniciativa('${id}')">
+                            <i class="fas fa-arrow-up"></i> Apoyar esta idea
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+
+            if(esExpirada) historial.innerHTML += cardHTML;
+            else activas.innerHTML += cardHTML;
+        });
+    });
+</script>
 </body>
 </html>

@@ -147,67 +147,90 @@
     </main>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
-            authDomain: "voxschola.firebaseapp.com",
-            projectId: "voxschola",
-            storageBucket: "voxschola.firebasestorage.app",
-            messagingSenderId: "730366058404",
-            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+        authDomain: "voxschola.firebaseapp.com",
+        projectId: "voxschola",
+        storageBucket: "voxschola.firebasestorage.app",
+        messagingSenderId: "730366058404",
+        appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        window.registrarVoto = async (id, votosActuales, meta) => {
-            if (votosActuales >= meta) return alert("¡Meta alcanzada! Gracias por participar.");
-            const ref = doc(db, "votaciones", id);
-            try {
-                await updateDoc(ref, { votos: votosActuales + 1 });
-            } catch (error) {
-                console.error("Error al votar:", error);
+    // Identificador único para este navegador
+    if(!localStorage.getItem('user_id_vox')) {
+        localStorage.setItem('user_id_vox', 'user_' + Math.random().toString(36).substr(2, 9));
+    }
+    const USER_ID = localStorage.getItem('user_id_vox');
+
+    window.registrarVoto = async (id, votosActuales, meta) => {
+        if (votosActuales >= meta) return alert("¡Meta alcanzada! Gracias por participar.");
+        
+        const ref = doc(db, "votaciones", id);
+        
+        try {
+            const docSnap = await getDoc(ref);
+            const data = docSnap.data();
+
+            // Verificamos si el usuario ya está en la lista de votantes de esta votación
+            if (data.votantes && data.votantes.includes(USER_ID)) {
+                alert("Ya has registrado tu voto en esta consulta.");
+                return;
             }
-        };
 
-        onSnapshot(collection(db, "votaciones"), (snapshot) => {
-            const contenedor = document.getElementById('contenedor-votaciones');
-            contenedor.innerHTML = "";
-
-            snapshot.forEach((d) => {
-                const data = d.data();
-                const id = d.id;
-                // Cálculo de porcentaje corregido
-                const meta = data.meta || 100;
-                const votos = data.votos || 0;
-                const porcentaje = Math.min(Math.round((votos / meta) * 100), 100);
-
-                contenedor.innerHTML += `
-                    <div class="vote-card">
-                        <span class="category-tag">${data.categoria || 'General'}</span>
-                        <h3 style="margin: 15px 0 5px 0; font-size: 1.2rem;">${data.titulo}</h3>
-                        <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 15px;">Termina en ${data.dias} días</p>
-                        
-                        <div class="progress-container">
-                            <div class="progress-bar" style="width: ${porcentaje}%;"></div>
-                        </div>
-
-                        <div class="vote-card-footer">
-                            <span><i class="fas fa-users"></i> ${votos} participaciones</span>
-                            <span class="percentage-text">${porcentaje}%</span>
-                        </div>
-                        
-                        <div style="margin-top: 20px; text-align: right;">
-                            <button class="btn-votar-link" onclick="registrarVoto('${id}', ${votos}, ${meta})">
-                                Votar <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
+            // Actualizamos sumando el voto y agregando al usuario a la lista
+            await updateDoc(ref, { 
+                votos: votosActuales + 1,
+                votantes: arrayUnion(USER_ID)
             });
+            
+            alert("¡Voto registrado!");
+
+        } catch (error) {
+            console.error("Error al votar:", error);
+        }
+    };
+
+    onSnapshot(collection(db, "votaciones"), (snapshot) => {
+        const contenedor = document.getElementById('contenedor-votaciones');
+        contenedor.innerHTML = "";
+
+        snapshot.forEach((d) => {
+            const data = d.data();
+            const id = d.id;
+            const meta = data.meta || 100;
+            const votos = data.votos || 0;
+            const porcentaje = Math.min(Math.round((votos / meta) * 100), 100);
+
+            contenedor.innerHTML += `
+                <div class="vote-card">
+                    <span class="category-tag">${data.categoria || 'General'}</span>
+                    <h3 style="margin: 15px 0 5px 0; font-size: 1.2rem;">${data.titulo}</h3>
+                    <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 15px;">Termina en ${data.dias} días</p>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${porcentaje}%;"></div>
+                    </div>
+
+                    <div class="vote-card-footer">
+                        <span><i class="fas fa-users"></i> ${votos} participaciones</span>
+                        <span class="percentage-text">${porcentaje}%</span>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button class="btn-votar-link" onclick="registrarVoto('${id}', ${votos}, ${meta})">
+                            Votar <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
         });
-    </script>
+    });
+</script>
 </body>
 </html>
