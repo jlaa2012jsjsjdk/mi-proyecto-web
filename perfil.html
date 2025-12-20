@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil | Vox Schola</title>
+    <title>Perfil de Presidencia | Vox Schola</title>
     <link rel="stylesheet" href="estilos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -22,7 +22,7 @@
         .avatar-large {
             width: 100px;
             height: 100px;
-            background: #0f172a;
+            background: #1e293b;
             color: white;
             border-radius: 50%;
             display: flex;
@@ -30,19 +30,21 @@
             justify-content: center;
             font-size: 2.5rem;
             font-weight: 800;
+            border: 4px solid #3b82f6;
         }
 
         .profile-info h2 {
             font-size: 1.8rem;
             margin-bottom: 5px;
+            color: #0f172a;
         }
 
         .status-badge-profile {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #dcfce7;
-            color: #166534;
+            background: #eff6ff;
+            color: #1e40af;
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.85rem;
@@ -65,7 +67,7 @@
         .data-item label {
             display: block;
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 5px;
@@ -74,24 +76,44 @@
         .data-item span {
             font-size: 1rem;
             font-weight: 600;
-            color: var(--text-dark);
+            color: #1e293b;
         }
 
-        .btn-edit-profile {
-            margin-top: 20px;
-            background: #f1f5f9;
-            color: var(--text-dark);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
+        /* TARJETA DE ADMIN CARGO ALTO */
+        .admin-access-card {
+            margin-top: 30px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 5px solid #ef4444;
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-text h3 {
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .btn-admin-panel {
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
             font-weight: 700;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             transition: 0.3s;
         }
 
-        .btn-edit-profile:hover {
-            background: var(--primary-blue);
-            color: white;
+        .btn-admin-panel:hover {
+            background: #ef4444;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
         }
     </style>
 </head>
@@ -101,10 +123,12 @@
         <div class="logo"><i class="fas fa-layer-group"></i> Vox Schola</div>
         
         <div class="user-profile">
-            <div class="avatar">J</div>
+            <div class="avatar">
+    <img src="perfil.jpg" alt="Foto Lic. Jose Luis" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+</div>
             <div class="user-info">
-                <strong>Jose Luis A.</strong>
-                <span><i class="fas fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> Verificado</span>
+                <strong>Lic. Jose Luis A.</strong>
+                <span><i class="fas fa-shield-halved" style="font-size: 0.5rem; color: #3b82f6;"></i> Administrador</span>
             </div>
         </div>
 
@@ -113,26 +137,27 @@
             <a href="votaciones.html" class="nav-link"><i class="fas fa-poll"></i> Votaciones</a>
             <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-pie"></i> Finanzas</a>
             <a href="buzon.html" class="nav-link"><i class="fas fa-envelope"></i> Buzón</a>
-            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
             <a href="perfil.html" class="nav-link active"><i class="fas fa-user-circle"></i> Mi Perfil</a>
         </nav>
     </aside>
 
     <main class="main-content">
         <header class="welcome-section">
-            <h1>Configuración de Cuenta</h1>
-            <p>Gestiona tu información y preferencias personales.</p>
+            <h1>Perfil de Directiva</h1>
+            <p>Información oficial del representante del comité.</p>
         </header>
 
         <section class="profile-header-card">
-            <div class="avatar-large">J</div>
+            <div class="avatar-large">
+    <img src="perfil.jpg" alt="Lic. Jose Luis A. Arce" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+</div>
             <div class="profile-info">
-                <h2>Jose Luis A.</h2>
+                <h2>Lic. Jose Luis A. Arce</h2>
                 <div class="status-badge-profile">
-                    <i class="fas fa-check-circle"></i> Alumno Verificado
+                    <i class="fas fa-award"></i> Presidente del Comité
                 </div>
-                <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9rem;">
-                    Miembro desde: Agosto 2024
+                <p style="margin-top: 15px; color: #64748b; font-size: 0.9rem;">
+                    Representante Legal de Padres de Familia
                 </p>
             </div>
         </section>
@@ -140,55 +165,63 @@
         <div class="summary-container">
             <div class="summary-card">
                 <div class="summary-header">
-                    <h3>Datos Personales</h3>
+                    <h3>Información Institucional</h3>
                 </div>
                 <div class="data-grid">
                     <div class="data-item">
-                        <label>Correo Institucional</label>
-                        <span>jose.luis@voxschola.edu</span>
+                        <label>Correo Oficial</label>
+                        <span>jlarmentaarce@gmail.com</span>
                     </div>
                     <div class="data-item">
-                        <label>Matrícula</label>
-                        <span>VX-2024-0892</span>
+                        <label>Cargo</label>
+                        <span>Presidente de Padres</span>
                     </div>
                     <div class="data-item">
-                        <label>Rol</label>
-                        <span>Estudiante Activo</span>
+                        <label>Jerarquía</label>
+                        <span>Administrador de Sistema</span>
                     </div>
                     <div class="data-item">
-                        <label>Estatus</label>
-                        <span style="color: #10b981;">Al Corriente</span>
+                        <label>Estatus de Gestión</label>
+                        <span style="color: #3b82f6;">Periodo Activo 2024-2025</span>
                     </div>
                 </div>
-                <button class="btn-edit-profile">Editar Información</button>
             </div>
 
             <div class="summary-card">
                 <div class="summary-header">
-                    <h3>Tu Actividad</h3>
+                    <h3>Resumen de Gestión</h3>
                 </div>
                 <div class="vote-item" style="margin-bottom: 25px;">
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Participación en Votaciones</p>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;">Proyectos Supervisados</p>
                     <div class="progress-container">
-                        <div class="progress-bar" style="width: 100%; background: #2563eb;"></div>
+                        <div class="progress-bar" style="width: 85%; background: #3b82f6;"></div>
                     </div>
                     <div class="progress-stats">
-                        <span>12/12 Votos</span>
-                        <span>¡Ciudadano Ejemplar!</span>
+                        <span>85% Completado</span>
                     </div>
                 </div>
                 <div class="vote-item">
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Iniciativas Apoyadas</p>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;">Transparencia Financiera</p>
                     <div class="progress-container">
-                        <div class="progress-bar" style="width: 75%; background: #8b5cf6;"></div>
+                        <div class="progress-bar" style="width: 100%; background: #10b981;"></div>
                     </div>
                     <div class="progress-stats">
-                        <span>15 Apoyos</span>
-                        <span>Líder de Opinión</span>
+                        <span>Auditoría al día</span>
                     </div>
                 </div>
             </div>
         </div>
+
+        <section class="admin-access-card">
+            <div class="admin-text">
+                <h3>Herramientas de Presidencia</h3>
+                <p style="color: #64748b; font-size: 0.85rem;">Acceso a base de datos y reportes oficiales.</p>
+            </div>
+            <a href="admin-dashboard.html" class="btn-admin-panel">
+                <i class="fas fa-laptop-code"></i> Abrir Consola Admin
+            </a>
+        </section>
+        
     </main>
 
 </body>
