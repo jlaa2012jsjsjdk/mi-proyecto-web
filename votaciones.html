@@ -7,57 +7,142 @@
     <link rel="stylesheet" href="estilos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .progress-container { width: 100%; background: #e2e8f0; height: 8px; border-radius: 10px; margin: 15px 0; position: relative; }
-        .progress-bar { height: 100%; border-radius: 10px; transition: width 0.5s ease-in-out; }
-        .vote-card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #64748b; font-weight: 600; }
-        .btn-votar-link { color: #2563eb; text-decoration: none; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
-        .btn-votar-link:hover { text-decoration: underline; }
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-cyan: #06b6d4;
+            --text-main: #f8fafc;
+        }
+
+        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; }
+
+        /* Estilo de Tarjetas Modernas */
+        .vote-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vote-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Barra de progreso con gradiente */
+        .progress-container { 
+            width: 100%; 
+            background: #334155; 
+            height: 12px; 
+            border-radius: 20px; 
+            margin: 15px 0; 
+            overflow: hidden;
+        }
+        
+        .progress-bar { 
+            height: 100%; 
+            border-radius: 20px; 
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); 
+        }
+
+        .category-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 50px;
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent-cyan);
+            font-weight: bold;
+        }
+
+        .btn-votar-link { 
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            padding: 8px 15px;
+            border-radius: 12px;
+            text-decoration: none; 
+            font-weight: bold; 
+            font-size: 0.85rem; 
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-votar-link:hover { opacity: 0.9; transform: scale(1.05); }
+
+        .vote-card-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 0.9rem; 
+            color: #94a3b8; 
+            margin-top: 10px;
+        }
+
+        .percentage-text {
+            color: var(--accent-pink);
+            font-weight: 800;
+        }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="logo"><i class="fas fa-layer-group"></i> Vox Schola</div>
-        <div class="user-profile">
-            <div class="avatar">J</div>
-            <div class="user-info"><strong>Jose Luis A.</strong><span><i class="fas fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> Verificado</span></div>
+    <div class="logo"><i class="fas fa-bolt"></i> Vox Schola</div>
+    
+    <div class="user-profile">
+        <div class="avatar">J</div>
+        <div class="user-info">
+            <strong>Jose Luis A.</strong>
+            <span><i class="fas fa-check-circle"></i> Verificado</span>
         </div>
-        <nav class="nav-menu">
-            <a href="index.html" class="nav-link"><i class="fas fa-house"></i> Inicio</a>
-            <a href="votaciones.html" class="nav-link active"><i class="fas fa-poll"></i> Votaciones</a>
-            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-pie"></i> Finanzas</a>
-            <a href="buzon.html" class="nav-link"><i class="fas fa-envelope"></i> Buzón</a>
-            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
-            <a href="perfil.html" class="nav-link"><i class="fas fa-user-circle"></i> Mi Perfil</a>
-        </nav>
-    </aside>
+    </div>
+
+    <nav class="nav-menu">
+        <a href="index.html" class="nav-link"><i class="fas fa-house"></i> Inicio</a>
+        <a href="votaciones.html" class="nav-link"><i class="fas fa-fire"></i> Votaciones</a>
+        <a href="finanzas.html" class="nav-link"><i class="fas fa-wallet"></i> Finanzas</a>
+        <a href="buzon.html" class="nav-link"><i class="fas fa-envelope"></i> Buzón</a>
+        <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+        <a href="perfil.html" class="nav-link"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+    </nav>
+</aside>
 
     <main class="main-content">
         <header class="welcome-section">
-            <h1>Votaciones Activas</h1>
-            <p>viernes, 19 de diciembre</p>
+            <h1>¿Qué decidimos hoy? 🔥</h1>
+            <p>Tu voz, tus reglas. Participa en las decisiones de la comunidad.</p>
         </header>
 
         <div class="quick-grid">
-            <div class="mini-card" style="border-left: 4px solid #2563eb;">
-                <div class="icon-square" style="background:#dbeafe; color:#2563eb;"><i class="fas fa-check-to-slot"></i></div>
-                <h4>Todas</h4>
-                <span>3 disponibles</span>
+            <div class="mini-card" style="border-bottom: 3px solid var(--accent-purple);">
+                <div class="icon-square" style="background:#4c1d95; color:#ddd6fe;"><i class="fas fa-music"></i></div>
+                <h4>Eventos</h4>
+                <span>Fiestas y shows</span>
+            </div>
+            <div class="mini-card" style="border-bottom: 3px solid var(--accent-cyan);">
+                <div class="icon-square" style="background:#164e63; color:#a5f3fc;"><i class="fas fa-utensils"></i></div>
+                <h4>Cafetería</h4>
+                <span>Menú y precios</span>
+            </div>
+            <div class="mini-card" style="border-bottom: 3px solid var(--accent-pink);">
+                <div class="icon-square" style="background:#831843; color:#fce7f3;"><i class="fas fa-volleyball"></i></div>
+                <h4>Deportes</h4>
+                <span>Torneos</span>
             </div>
             <div class="mini-card">
-                <div class="icon-square" style="background:#dcfce7; color:#10b981;"><i class="fas fa-clock"></i></div>
-                <h4>Recientes</h4>
-                <span>Cierran pronto</span>
-            </div>
-            <div class="mini-card">
-                <div class="icon-square" style="background:#f3e8ff; color:#a855f7;"><i class="fas fa-history"></i></div>
-                <h4>Historial</h4>
-                <span>Ver resultados</span>
+                <div class="icon-square" style="background:#1e293b; color:#94a3b8;"><i class="fas fa-ellipsis-h"></i></div>
+                <h4>Otros</h4>
+                <span>Varios</span>
             </div>
         </div>
 
-        <div id="contenedor-votaciones" class="summary-container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-            <p>Cargando votaciones...</p>
+        <div id="contenedor-votaciones" class="summary-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
+            <p>Buscando votaciones picantes...</p>
         </div>
     </main>
 
@@ -77,14 +162,16 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // FUNCIÓN PARA VOTAR
         window.registrarVoto = async (id, votosActuales, meta) => {
-            if (votosActuales >= meta) return alert("Esta votación ya llegó al 100%");
+            if (votosActuales >= meta) return alert("¡Meta alcanzada! Gracias por participar.");
             const ref = doc(db, "votaciones", id);
-            await updateDoc(ref, { votos: votosActuales + 1 });
+            try {
+                await updateDoc(ref, { votos: votosActuales + 1 });
+            } catch (error) {
+                console.error("Error al votar:", error);
+            }
         };
 
-        // ESCUCHA EN TIEMPO REAL
         onSnapshot(collection(db, "votaciones"), (snapshot) => {
             const contenedor = document.getElementById('contenedor-votaciones');
             contenedor.innerHTML = "";
@@ -92,24 +179,30 @@
             snapshot.forEach((d) => {
                 const data = d.data();
                 const id = d.id;
-                const porcentaje = Math.round((data.votos / data.meta) * 100);
-                const colorBarra = porcentaje > 80 ? "#10b981" : "#0f172a"; // Verde si está casi lista, negro/azul si no.
+                // Cálculo de porcentaje corregido
+                const meta = data.meta || 100;
+                const votos = data.votos || 0;
+                const porcentaje = Math.min(Math.round((votos / meta) * 100), 100);
 
                 contenedor.innerHTML += `
-                    <div class="summary-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                            <h3 style="font-size: 1.1rem; max-width: 70%;">${data.titulo}</h3>
-                            <span class="btn-votar-link" onclick="registrarVoto('${id}', ${data.votos}, ${data.meta})">Votar ahora ></span>
-                        </div>
-                        <p style="font-size: 0.8rem; color: #64748b; margin-top: 10px;">Cierra en ${data.dias} días</p>
+                    <div class="vote-card">
+                        <span class="category-tag">${data.categoria || 'General'}</span>
+                        <h3 style="margin: 15px 0 5px 0; font-size: 1.2rem;">${data.titulo}</h3>
+                        <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 15px;">Termina en ${data.dias} días</p>
                         
                         <div class="progress-container">
-                            <div class="progress-bar" style="width: ${porcentaje}%; background: ${colorBarra};"></div>
+                            <div class="progress-bar" style="width: ${porcentaje}%;"></div>
                         </div>
 
                         <div class="vote-card-footer">
-                            <span>${data.votos} votos</span>
-                            <span>${porcentaje}% completado</span>
+                            <span><i class="fas fa-users"></i> ${votos} participaciones</span>
+                            <span class="percentage-text">${porcentaje}%</span>
+                        </div>
+                        
+                        <div style="margin-top: 20px; text-align: right;">
+                            <button class="btn-votar-link" onclick="registrarVoto('${id}', ${votos}, ${meta})">
+                                Votar <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
                 `;
