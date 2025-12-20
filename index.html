@@ -27,85 +27,229 @@
             background-color: var(--bg-dark); 
             color: var(--text-main); 
             font-family: 'Plus Jakarta Sans', sans-serif;
+            display: none; 
             overflow-x: hidden;
-            /* Quitamos el display none para que la recepción funcione */
         }
 
-        /* SIDEBAR Y CONTENIDO (Igual que tu diseño) */
+        /* SIDEBAR */
         .sidebar { 
             width: 280px; height: 100vh; 
             background: var(--sidebar-bg); 
             position: fixed; left: 0; top: 0; 
             border-right: 2px solid rgba(6, 182, 212, 0.2); 
-            padding: 25px; z-index: 100;
+            padding: 25px; z-index: 9999;
             display: flex; flex-direction: column;
         }
 
-        .main-content { margin-left: 280px; padding: 40px 60px; min-height: 100vh; background: radial-gradient(circle at top right, #1e1b4b, #020617); }
-
-        /* ESTILOS DEL MODAL DE RECEPCIÓN */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
-            display: flex; justify-content: center; align-items: center; z-index: 9999;
-        }
-        .modal-content {
-            background: #1e293b; padding: 40px; border-radius: 30px;
-            border: 2px solid var(--neon-cyan); text-align: center; width: 400px;
-            box-shadow: 0 0 50px rgba(6, 182, 212, 0.3);
-        }
-        .btn-modal {
-            width: 100%; padding: 15px; border-radius: 15px; border: none;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
-            background: var(--neon-cyan); color: #000; margin-bottom: 10px;
+        .logo-box { margin-bottom: 30px; }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        /* Clases de utilidad */
-        .nav-link { text-decoration: none; color: var(--text-dim); padding: 14px; display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600; border-radius: 15px; }
-        .nav-link:hover { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); }
-        .balance-display { background: #0f172a; border: 2px solid var(--success); border-radius: 30px; padding: 40px; text-align: center; margin: 30px 0; }
+        .logo-main { 
+            color: var(--neon-cyan); 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); 
+        }
+
+        .admin-secret-btn {
+            text-decoration: none;
+            color: rgba(148, 163, 184, 0.1); 
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .admin-secret-btn:hover {
+            color: var(--neon-cyan);
+            opacity: 1;
+        }
+
+        .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03); 
+            padding: 15px; border-radius: 20px;
+            display: flex; align-items: center; gap: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .avatar-container {
+            width: 45px; height: 45px; border-radius: 15px;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-cyan));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: white; font-size: 1.2rem;
+        }
+
+        .nav-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
+
+        .nav-link {
+            text-decoration: none; color: var(--text-dim); 
+            padding: 14px 18px; border-radius: 15px;
+            display: flex; align-items: center; gap: 12px; 
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--neon-cyan);
+            border-left: 4px solid var(--neon-cyan);
+        }
+
+        .main-content { 
+            margin-left: 280px; padding: 40px 60px; 
+            min-height: 100vh;
+            background: radial-gradient(circle at top right, #1e1b4b, #020617);
+        }
+
+        .welcome-section h1 { 
+            font-size: 2.5rem; font-weight: 800; margin: 0;
+            color: white;
+        }
+
+        .quick-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 25px; margin: 40px 0; 
+        }
+
+        .mini-card { 
+            background: var(--card-bg); padding: 30px 20px; 
+            border-radius: 28px; text-align: center; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            transition: 0.4s ease; cursor: pointer;
+        }
+
+        .mini-card:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--neon-cyan);
+            box-shadow: 0 15px 35px rgba(6, 182, 212, 0.2); 
+        }
+
+        .icon-square { 
+            width: 65px; height: 65px; border-radius: 20px; 
+            margin: 0 auto 15px; display: flex; 
+            align-items: center; justify-content: center; 
+            font-size: 1.6rem; 
+        }
+
+        .bg-voto { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); }
+        .bg-finanzas { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .bg-buzon { background: rgba(236, 72, 153, 0.1); color: var(--neon-pink); }
+        .bg-iniciativas { background: rgba(139, 92, 246, 0.1); color: var(--neon-purple); }
+
+        .summary-card { 
+            background: rgba(30, 41, 59, 0.5); 
+            backdrop-filter: blur(10px);
+            border-radius: 35px; padding: 40px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+        }
+
+        .balance-display { 
+            background: #0f172a; 
+            border: 2px solid var(--success); 
+            border-radius: 30px; padding: 40px; 
+            text-align: center; margin: 30px 0;
+        }
+
+        .balance-display h2 { 
+            font-size: 3.5rem; color: white; margin: 10px 0; 
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.3); 
+        }
+
+        .btn-logout {
+            margin-top: auto;
+            color: var(--error) !important;
+        }
     </style>
 </head>
 <body>
 
-    <div id="modalIdentificacion" class="modal-overlay">
-        <div class="modal-content">
-            <div style="font-size: 3rem; color: var(--neon-cyan); margin-bottom: 20px;">
-                <i class="fas fa-fingerprint"></i>
-            </div>
-            <h2 style="margin:0; color: white;">Acceso al Sistema</h2>
-            <p style="color: var(--text-dim); margin-bottom: 25px;">Ingresa tu correo para validar tu rango</p>
-            
-            <input type="email" id="emailUsuario" placeholder="usuario@gmail.com" 
-                   style="width:100%; padding:15px; border-radius:15px; border:1px solid #334155; background:#0f172a; color:white; margin-bottom:20px; outline:none; text-align: center;">
-            
-            <button onclick="procesarEntrada()" class="btn-modal">
-                <i class="fas fa-sign-in-alt"></i> ENTRAR PAPA
-            </button>
-        </div>
-    </div>
-
     <aside class="sidebar">
-        <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
-        <nav class="nav-menu" style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px;">
-            <a href="index.html" class="nav-link"><i class="fas fa-house"></i> INICIO</a>
-            <a href="#" onclick="cerrarSesion()" class="nav-link" style="color: var(--error);"><i class="fas fa-power-off"></i> SALIR</a>
-        </nav>
-    </aside>
+        <div class="logo-box">
+            <div class="logo-container">
+                <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+                <a href="login.html" class="admin-secret-btn">
+                    <i class="fas fa-user-shield"></i>
+                </a>
+            </div>
+            <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
+        </div>
+        
+        <div class="user-profile">
+            <div class="avatar-container" id="user-avatar-letra">U</div>
+            <div class="user-info">
+                <strong id="user-name-display" style="display:block; font-size: 0.9rem;">Cargando...</strong>
+                <span style="font-size: 0.75rem; color: var(--success);"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Conectado</span>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+        <a href="index.html" class="nav-link active"><i class="fas fa-house"></i> INICIO</a>
+        <a href="entrevista-mantenimiento.html" class="nav-link"><i class="fas fa-clipboard-check"></i> ENTREVISTA</a>
+        <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> VOTACIONES</a>
+        <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> PROYECTOS</a>
+        <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> TRANSPARENCIA</a>
+        <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> SUGERENCIAS</a>
+    </nav>
+</aside>
 
     <main class="main-content">
-        <h1>Panel de Comunidad</h1>
-        <div class="balance-display">
-            <span style="color: var(--success); font-weight: 800; font-size: 0.75rem; letter-spacing: 2px;">SALDO ACTUAL</span>
-            <h2 id="index-balance-h2">$0.00</h2>
+        <header class="welcome-section">
+            <p id="current-date" style="color: var(--neon-cyan); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;"></p>
+            <h1>Bienvenido, <span id="user-greeting">Usuario</span></h1>
+            <p style="color: var(--text-dim);">¿Qué deseas revisar hoy en tu comunidad?</p>
+        </header>
+
+        <div class="quick-grid">
+            <div class="mini-card" onclick="location.href='votaciones.html'">
+                <div class="icon-square bg-voto"><i class="fas fa-check-to-slot"></i></div>
+                <h4 style="margin: 0; color: white;">Votaciones</h4>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">Tu opinión cuenta</span>
+            </div>
+            <div class="mini-card" onclick="location.href='finanzas.html'">
+                <div class="icon-square bg-finanzas"><i class="fas fa-hand-holding-dollar"></i></div>
+                <h4 style="margin: 0; color: white;">Cuentas Claras</h4>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">Uso de fondos</span>
+            </div>
+            <div class="mini-card" onclick="location.href='buzon.html'">
+                <div class="icon-square bg-buzon"><i class="fas fa-comment-medical"></i></div>
+                <h4 style="margin: 0; color: white;">Sugerencias</h4>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">Buzón abierto</span>
+            </div>
+            <div class="mini-card" onclick="location.href='iniciativas.html'">
+                <div class="icon-square bg-iniciativas"><i class="fas fa-rocket"></i></div>
+                <h4 style="margin: 0; color: white;">Proyectos</h4>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">Nuevas ideas</span>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin:0; color: white; font-size: 1.3rem; font-weight: 800;">📉 Resumen de Transparencia</h3>
+                <a href="finanzas.html" style="color: var(--neon-cyan); text-decoration: none; font-weight: 700; font-size: 0.8rem;">
+                    VER TODO <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="balance-display">
+                <span style="color: var(--success); font-weight: 800; font-size: 0.75rem; letter-spacing: 2px;">SALDO ACTUAL DE LA COMUNIDAD</span>
+                <h2 id="index-balance-h2">$0.00</h2>
+            </div>
         </div>
     </main>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
             authDomain: "voxschola.firebaseapp.com",
@@ -117,37 +261,21 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --- LÓGICA DE RECEPCIÓN ---
-        const CORREO_ADMIN_MAESTRO = "jlarmentaarce@gmail.com"; 
+        const opciones = { weekday: 'long', day: 'numeric', month: 'long' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-ES', opciones);
 
-        // Si ya está logueado, ocultamos el modal al cargar
-        window.onload = function() {
-            if(localStorage.getItem("user_email")) {
-                document.getElementById('modalIdentificacion').style.display = 'none';
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                document.body.style.display = "block";
+                const name = user.displayName || "Usuario";
+                document.getElementById('user-name-display').innerText = name;
+                document.getElementById('user-greeting').innerText = name.split(' ')[0];
+                document.getElementById('user-avatar-letra').innerText = name.charAt(0).toUpperCase();
                 escucharFinanzasIndex();
-            }
-        }
-
-        function procesarEntrada() {
-            const correoInput = document.getElementById('emailUsuario').value.trim().toLowerCase();
-
-            if (!correoInput.includes("@")) {
-                alert("Correo no válido, papa.");
-                return;
-            }
-
-            localStorage.setItem("user_email", correoInput);
-
-            if (correoInput === CORREO_ADMIN_MAESTRO) {
-                localStorage.setItem("admin_access", "true");
-                alert("¡Bienvenido, Jefe!");
-                window.location.href = "admin.html";
             } else {
-                localStorage.setItem("admin_access", "false");
-                alert("Acceso como Alumno.");
-                window.location.href = "entrevista-mantenimiento.html";
+                window.location.href = "login.html";
             }
-        }
+        });
 
         function escucharFinanzasIndex() {
             db.collection("finanzas").onSnapshot((snapshot) => {
@@ -157,14 +285,126 @@
                     const monto = parseFloat(data.monto) || 0;
                     total += (data.tipo === "ingreso") ? monto : -monto;
                 });
-                document.getElementById('index-balance-h2').innerText = `$${total.toLocaleString('es-MX')}`;
+                document.getElementById('index-balance-h2').innerText = 
+                    `$${total.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             });
         }
 
-        function cerrarSesion() {
-            localStorage.clear();
-            window.location.reload();
+        function logout() {
+            firebase.auth().signOut().then(() => window.location.href = "login.html");
         }
     </script>
+    <div id="modalAcceso" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <h2>Bienvenido a VOX</h2>
+        <p>Selecciona tu tipo de acceso:</p>
+        
+        <div class="opciones-acceso">
+            <button onclick="accesoAlumno()" class="btn-alumno">
+                <i class="fas fa-user-graduate"></i> Soy Alumno
+            </button>
+            <button onclick="accesoAdmin()" class="btn-admin">
+                <i class="fas fa-user-shield"></i> Acceso Admin
+            </button>
+        </div>
+        <button onclick="cerrarModal()" class="btn-cerrar">Cancelar</button>
+    </div>
+</div>
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
+    display: flex; justify-content: center; align-items: center; z-index: 1000;
+}
+.modal-content {
+    background: #1e293b; padding: 30px; border-radius: 20px;
+    border: 2px solid var(--neon-blue); text-align: center; width: 350px;
+}
+.opciones-acceso { display: flex; flex-direction: column; gap: 15px; margin: 20px 0; }
+.btn-alumno, .btn-admin {
+    padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s;
+}
+.btn-alumno { background: var(--neon-blue); color: #000; }
+.btn-admin { background: transparent; border: 1px solid var(--neon-purple); color: var(--neon-purple); }
+.btn-admin:hover { background: var(--neon-purple); color: white; }
+.btn-cerrar { background: none; border: none; color: gray; cursor: pointer; }
+function mostrarModal() {
+    document.getElementById('modalAcceso').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('modalAcceso').style.display = 'none';
+}
+
+function accesoAlumno() {
+    let correo = prompt("Introduce tu correo institucional:");
+    if (correo && correo.includes("@")) {
+        localStorage.setItem("user_role", "alumno");
+        localStorage.setItem("user_email", correo);
+        window.location.href = "entrevista-mantenimiento.html";
+    }
+}
+
+function accesoAdmin() {
+    let clave = prompt("Introduce la Llave Maestra:");
+    if (clave === "TU_CLAVE_AQUI") {
+        localStorage.setItem("admin_access", "true");
+        window.location.href = "admin.html";
+    } else {
+        alert("Clave incorrecta, papa.");
+    }
+}
+<div id="modalIdentificacion" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div class="icon-square bg-voto" style="margin-bottom: 20px;">
+            <i class="fas fa-id-card"></i>
+        </div>
+        <h2 style="margin:0; color: white;">Identificación</h2>
+        <p style="color: var(--text-dim); margin-bottom: 20px;">Ingresa tu correo institucional para continuar</p>
+        
+        <input type="email" id="emailUsuario" placeholder="usuario@ejemplo.com" 
+               style="width:100%; padding:15px; border-radius:15px; border:1px solid var(--neon-cyan); background:#0f172a; color:white; margin-bottom:20px; outline:none;">
+        
+        <div class="opciones-acceso">
+            <button onclick="procesarEntrada()" class="btn-modal btn-alumno">
+                <i class="fas fa-sign-in-alt"></i> ACCEDER
+            </button>
+        </div>
+        <button onclick="cerrarRecepcion()" style="background:none; border:none; color:gray; cursor:pointer; font-size:0.8rem;">Cancelar</button>
+    </div>
+</div>
+// --- CONFIGURACIÓN DE ACCESO ---
+const CORREO_ADMIN_MAESTRO = "jlarmentaarce@gmail.com"; // <-- PON TU CORREO AQUÍ, PAPA
+
+function mostrarRecepcion() {
+    document.getElementById('modalIdentificacion').style.display = 'flex';
+}
+
+function cerrarRecepcion() {
+    document.getElementById('modalIdentificacion').style.display = 'none';
+}
+
+function procesarEntrada() {
+    const correoInput = document.getElementById('emailUsuario').value.trim().toLowerCase();
+
+    if (!correoInput || !correoInput.includes("@")) {
+        alert("Por favor, ingresa un correo válido, papa.");
+        return;
+    }
+
+    // Guardamos la identidad del usuario
+    localStorage.setItem("user_email", correoInput);
+
+    if (correoInput === CORREO_ADMIN_MAESTRO) {
+        // ES EL ADMINISTRADOR (TÚ)
+        localStorage.setItem("admin_access", "true");
+        alert("¡Bienvenido, Papa! Accediendo al Sistema Core.");
+        window.location.href = "admin.html";
+    } else {
+        // ES UN ALUMNO O PADRE
+        localStorage.setItem("admin_access", "false");
+        alert("Identidad confirmada. Redirigiendo a la entrevista...");
+        window.location.href = "entrevista-mantenimiento.html";
+    }
+}
 </body>
 </html>
