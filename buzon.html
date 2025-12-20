@@ -6,228 +6,128 @@
     <title>Buzón Seguro | Vox Schola</title>
     <link rel="stylesheet" href="estilos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #020617;
             --sidebar-bg: #0f172a;
             --card-bg: #1e293b;
-            --accent-purple: #8b5cf6;
-            --accent-pink: #ec4899;
-            --accent-cyan: #06b6d4;
+            --neon-purple: #8b5cf6;
+            --neon-pink: #ec4899;
+            --neon-cyan: #06b6d4;
             --text-main: #f1f5f9;
             --text-dim: #94a3b8;
         }
 
-        * { box-sizing: border-box; }
-        
         body { 
-            margin: 0; 
-            padding: 0; 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
-            font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+            margin: 0; background-color: var(--bg-dark); 
+            color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex; min-height: 100vh;
         }
 
-        /* SIDEBAR DARK MODE */
+        /* SIDEBAR CONSISTENTE */
         .sidebar { 
-            width: 280px; 
-            height: 100vh; 
-            background: var(--sidebar-bg); 
-            position: fixed; 
-            left: 0; 
-            top: 0; 
-            border-right: 1px solid rgba(255, 255, 255, 0.05); 
-            padding: 25px;
-            z-index: 9999;
-            overflow-y: auto;
+            width: 280px; height: 100vh; background: var(--sidebar-bg); 
+            position: fixed; left: 0; top: 0; border-right: 2px solid rgba(139, 92, 246, 0.2); 
+            padding: 25px; z-index: 9999; display: flex; flex-direction: column;
         }
-
-        .main-content { 
-            margin-left: 280px; 
-            padding: 40px;
-            min-height: 100vh;
-        }
-
-        /* PERFIL DE USUARIO EN SIDEBAR */
-        .user-info-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 18px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .user-avatar {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            color: white;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold;
-        }
-        .user-details .name { font-weight: bold; color: white; font-size: 0.9rem; }
-        .user-details .status { color: #10b981; font-size: 0.7rem; font-weight: 800; display: flex; align-items: center; gap: 4px; text-transform: uppercase; }
-
-        /* NAVEGACIÓN SIDEBAR */
-        .nav-menu { display: flex; flex-direction: column; gap: 8px; margin-top: 30px; }
+        .logo { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin-bottom: 40px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.5); }
+        .nav-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
         .nav-link {
-            text-decoration: none;
-            color: var(--text-dim);
-            padding: 12px 15px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-            transition: 0.3s;
+            text-decoration: none; color: var(--text-dim); padding: 14px 18px; border-radius: 15px;
+            display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600;
         }
-        .nav-link i { width: 20px; text-align: center; }
-        .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--accent-cyan); font-weight: bold; }
-        .nav-link:hover:not(.active) { background: rgba(255, 255, 255, 0.05); color: white; }
+        .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
-        /* DISEÑO DEL BUZÓN DARK CAPSULE */
-        .buzon-container {
-            max-width: 650px;
-            margin: 0 auto;
-        }
+        /* CONTENIDO */
+        .main-content { margin-left: 280px; padding: 40px 60px; flex-grow: 1; background: radial-gradient(circle at center, #1e1b4b, #020617); display: flex; justify-content: center; align-items: center; }
+
+        .buzon-container { max-width: 600px; width: 100%; }
+
         .buzon-capsule {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 35px;
-            padding: 45px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            position: relative;
-            overflow: hidden;
+            background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(20px);
+            border-radius: 40px; padding: 50px; border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5); position: relative;
         }
-        .buzon-capsule::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+
+        .buzon-capsule::after {
+            content: ""; position: absolute; inset: -1px; border-radius: 40px;
+            padding: 2px; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
         }
-        
+
         .header-icon { 
-            color: var(--accent-cyan); 
-            font-size: 4rem; 
-            text-align: center; 
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.4));
+            font-size: 4.5rem; color: var(--neon-cyan); text-align: center; 
+            margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--neon-cyan));
         }
-        
+
         .form-group { margin-bottom: 25px; }
         .form-group label { 
-            display: block; 
-            font-weight: 700; 
-            margin-bottom: 10px; 
-            color: var(--accent-cyan); 
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            display: block; color: var(--neon-cyan); font-size: 0.75rem; 
+            font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
         }
+
         .form-group input, .form-group textarea {
-            width: 100%; 
-            padding: 18px; 
-            border-radius: 16px; 
-            border: 1px solid #334155;
-            background: #0f172a; 
-            color: white;
-            outline: none; 
-            font-family: inherit; 
-            transition: 0.3s;
-            font-size: 1rem;
+            width: 100%; padding: 18px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.8); color: white; outline: none; transition: 0.3s; font-family: inherit;
         }
-        .form-group input:focus, .form-group textarea:focus { 
-            border-color: var(--accent-purple); 
-            background: #1e293b;
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--neon-purple); box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
         }
 
         .btn-enviar {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink)); 
-            color: white; 
-            border: none; 
-            width: 100%; 
-            padding: 20px;
-            border-radius: 18px; 
-            font-weight: 800; 
-            font-size: 1.1rem;
-            cursor: pointer; 
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink)); 
+            color: white; border: none; width: 100%; padding: 20px; border-radius: 20px;
+            font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1rem;
         }
-        .btn-enviar:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
-            filter: brightness(1.1);
-        }
+
+        .btn-enviar:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4); }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-    <div class="logo"><i class="fas fa-bolt"></i> Vox Schola</div>
-    
-    <div class="user-profile">
-    <div class="avatar" id="user-avatar-letra">U</div>
-    <div class="user-info">
-        <strong id="user-name-display">Cargando...</strong>
-        <span><i class="fas fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> Verificado</span>
-    </div>
-</div>
-
-    <nav class="nav-menu">
-        <a href="index.html" class="nav-link"><i class="fas fa-house"></i> Inicio</a>
-        <a href="votaciones.html" class="nav-link"><i class="fas fa-fire"></i> Votaciones</a>
-        <a href="finanzas.html" class="nav-link"><i class="fas fa-wallet"></i> Finanzas</a>
-        <a href="buzon.html" class="nav-link"><i class="fas fa-envelope"></i> Buzón</a>
-        <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
-        <a href="perfil.html" class="nav-link"><i class="fas fa-user-circle"></i> Mi Perfil</a>
-    </nav>
-</aside>
-        </div>
-
+        <div class="logo"><i class="fas fa-bolt"></i> VOX ADMIN</div>
         <nav class="nav-menu">
-            <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
+            <a href="index.html" class="nav-link"><i class="fas fa-house"></i> Inicio</a>
             <a href="votaciones.html" class="nav-link"><i class="fas fa-fire"></i> Votaciones</a>
             <a href="finanzas.html" class="nav-link"><i class="fas fa-wallet"></i> Finanzas</a>
             <a href="buzon.html" class="nav-link active"><i class="fas fa-envelope"></i> Buzón</a>
-            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Ideas</a>
+            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
         </nav>
     </aside>
 
     <main class="main-content">
         <div class="buzon-container">
-            <header style="text-align: center; margin-bottom: 50px;">
+            <header style="text-align: center; margin-bottom: 40px;">
                 <div class="header-icon"><i class="fas fa-user-secret"></i></div>
-                <h1 style="font-size: 2.5rem; letter-spacing: -1px; margin: 0; color: white;">Buzón Anónimo</h1>
-                <p style="color: var(--text-dim); font-size: 1.1rem; margin-top: 10px;">Tu identidad está protegida por cifrado escolar.</p>
+                <h1 style="margin:0; font-size: 2.2rem; font-weight: 800;">Buzón Anónimo</h1>
+                <p style="color: var(--text-dim);">Tu identidad está protegida por cifrado escolar.</p>
             </header>
 
             <div class="buzon-capsule">
                 <div class="form-group">
-                    <label><i class="fas fa-paper-plane"></i> Destinatario</label>
-                    <input type="text" id="asunto" placeholder="Ej: Dirección, Profe de Física...">
+                    <label>Destinatario</label>
+                    <input type="text" id="asunto" placeholder="Ej: Dirección, Cafetería, Profe...">
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-comment-alt"></i> Tu Mensaje / Reporte</label>
-                    <textarea id="mensaje" rows="6" placeholder="Escribe aquí lo sucedido con total libertad..."></textarea>
+                    <label>Mensaje Confidencial</label>
+                    <textarea id="mensaje" rows="5" placeholder="Escribe aquí con total libertad..."></textarea>
                 </div>
 
                 <button class="btn-enviar" id="btnEnviar">
-                    <i class="fas fa-lock"></i> Enviar Reporte Seguro
+                    <i class="fas fa-shield-alt"></i> Transmisión Segura
                 </button>
+                
+                <p style="text-align: center; color: var(--text-dim); font-size: 0.7rem; margin-top: 25px; letter-spacing: 1px;">
+                    SISTEMA DE ENCRIPTACIÓN VOX V2.0 ACTIVADO
+                </p>
             </div>
-            
-            <p style="text-align: center; color: var(--text-dim); font-size: 0.8rem; margin-top: 30px;">
-                <i class="fas fa-shield-alt"></i> Seguridad Vox Schola v2.0
-            </p>
         </div>
     </main>
 
@@ -252,10 +152,10 @@
             const msg = document.getElementById('mensaje').value;
             const btn = document.getElementById('btnEnviar');
 
-            if(!asu || !msg) return alert("Por favor, rellena todos los campos.");
+            if(!asu || !msg) return alert("Completa los campos para iniciar la transmisión.");
 
             try {
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                btn.innerHTML = '<i class="fas fa-sync fa-spin"></i> Cifrando...';
                 btn.disabled = true;
 
                 await addDoc(collection(db, "buzon"), {
@@ -264,11 +164,11 @@
                     fecha: serverTimestamp()
                 });
 
-                alert("🚀 Reporte enviado correctamente de forma anónima.");
+                alert("🚀 Mensaje enviado. Tu anonimato ha sido preservado.");
                 location.reload();
             } catch(e) { 
-                alert("Error al conectar con el servidor seguro."); 
-                btn.innerHTML = '<i class="fas fa-lock"></i> Enviar Reporte Seguro';
+                alert("Error en el enlace de datos."); 
+                btn.innerHTML = '<i class="fas fa-shield-alt"></i> Reintentar Transmisión';
                 btn.disabled = false;
             }
         });
