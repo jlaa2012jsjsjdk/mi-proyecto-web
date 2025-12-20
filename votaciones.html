@@ -33,13 +33,13 @@
     <main class="main-content">
         <header class="welcome-section">
             <h1>Centro de Votaciones</h1>
-            <p>Votaciones activas en tiempo real</p>
+            <p>Participa en las decisiones de la escuela</p>
         </header>
 
         <div id="contenedor-votaciones" class="quick-grid" style="grid-template-columns: 1fr;">
-            <div style="padding: 40px; text-align: center;">
+            <div style="text-align: center; padding: 40px;">
                 <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #2563eb;"></i>
-                <p>Buscando votaciones en la base de datos...</p>
+                <p>Cargando encuestas...</p>
             </div>
         </div>
     </main>
@@ -61,11 +61,13 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
-        // 1. Identidad y Botón de Admin
+        // 1. Gestión de Usuario y Seguridad [cite: 2025-12-16]
         auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById("user-name-display").innerText = user.displayName;
                 document.getElementById("user-avatar-letra").innerText = user.displayName.charAt(0);
+                
+                // Mostrar admin solo si es jlarmentaarce@gmail.com [cite: 2025-12-16]
                 if (user.email === "jlarmentaarce@gmail.com") {
                     document.getElementById("admin-button").style.display = "flex";
                 }
@@ -74,50 +76,55 @@
             }
         });
 
-        // 2. Cargar Votaciones (Asegúrate que la colección se llame "votaciones")
+        // 2. Cargar Votaciones (Ajustado a tus campos: opcionA, opcionB)
         db.collection("votaciones").onSnapshot((snapshot) => {
             const contenedor = document.getElementById("contenedor-votaciones");
             contenedor.innerHTML = "";
 
             if (snapshot.empty) {
-                contenedor.innerHTML = `
-                    <div class="summary-card" style="text-align: center; padding: 20px;">
-                        <i class="fas fa-info-circle" style="color: #64748b; font-size: 2rem;"></i>
-                        <p>No hay votaciones creadas. Ve al Panel Admin para crear una.</p>
-                    </div>`;
+                contenedor.innerHTML = "<p>No hay encuestas disponibles.</p>";
                 return;
             }
 
             snapshot.forEach((doc) => {
-                const data = doc.data();
+                const v = doc.data();
                 const id = doc.id;
-                // Asumimos que tus opciones son un array llamado 'opciones'
-                let opcionesHtml = "";
-                if(data.opciones) {
-                    data.opciones.forEach((opc, index) => {
-                        opcionesHtml += `
-                            <button onclick="votar('${id}', ${index})" style="width: 100%; margin-bottom: 10px; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; display: flex; justify-content: space-between; cursor: pointer;">
-                                <span>${opc.nombre}</span>
-                                <strong style="color: #2563eb;">${opc.votos || 0} votos</strong>
-                            </button>`;
-                    });
-                }
 
                 contenedor.innerHTML += `
-                    <div class="summary-card">
-                        <div class="summary-header"><h3>${data.titulo || 'Sin título'}</h3></div>
-                        <div style="padding: 15px;">${opcionesHtml}</div>
-                    </div>`;
+                    <div class="summary-card" style="margin-bottom: 20px;">
+                        <div class="summary-header">
+                            <h3><i class="fas fa-question-circle"></i> ${v.titulo || 'Sin título'}</h3>
+                        </div>
+                        <div style="padding: 15px;">
+                            <button onclick="votar('${id}', 'votosA')" class="nav-link" style="width: 100%; margin-bottom: 10px; border: 1px solid #e2e8f0; justify-content: space-between; background: #f8fafc; cursor: pointer;">
+                                <span>${v.opcionA || 'Opción A'}</span>
+                                <strong style="color: #2563eb;">${v.votosA || 0} votos</strong>
+                            </button>
+                            <button onclick="votar('${id}', 'votosB')" class="nav-link" style="width: 100%; border: 1px solid #e2e8f0; justify-content: space-between; background: #f8fafc; cursor: pointer;">
+                                <span>${v.opcionB || 'Opción B'}</span>
+                                <strong style="color: #2563eb;">${v.votosB || 0} votos</strong>
+                            </button>
+                        </div>
+                    </div>
+                `;
             });
         });
 
-        window.votar = async (id, index) => {
-            const docRef = db.collection("votaciones").doc(id);
-            const doc = await docRef.get();
-            const data = doc.data();
-            data.opciones[index].votos += 1;
-            await docRef.update({ opciones: data.opciones });
-            alert("¡Voto registrado!");
+        // 3. Función para procesar el voto
+        window.votar = async (id, campoVotos) => {
+            try {
+                const docRef = db.collection("votaciones").doc(id);
+                const doc = await docRef.get();
+                const votosActuales = doc.data()[campoVotos] || 0;
+
+                await docRef.update({
+                    [campoVotos]: votosActuales + 1
+                });
+                alert("¡Gracias por participar!");
+            } catch (error) {
+                console.error("Error al votar:", error);
+                alert("Hubo un problema al registrar tu voto.");
+            }
         };
     </script>
 </body>
