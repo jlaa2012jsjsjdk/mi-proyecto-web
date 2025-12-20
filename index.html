@@ -269,17 +269,21 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-ES', opciones);
 
         firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                document.body.style.display = "block";
-                const name = user.displayName || "Usuario";
-                document.getElementById('user-name-display').innerText = name;
-                document.getElementById('user-greeting').innerText = name.split(' ')[0];
-                document.getElementById('user-avatar-letra').innerText = name.charAt(0).toUpperCase();
-                escucharFinanzasIndex();
-            } else {
-                window.location.href = "login.html";
-            }
-        });
+    if (user) {
+        // Si hay usuario de Google, mostramos la página
+        document.body.style.display = "block";
+        const name = user.displayName || "Usuario";
+        document.getElementById('user-name-display').innerText = name;
+        document.getElementById('user-greeting').innerText = name.split(' ')[0];
+        document.getElementById('user-avatar-letra').innerText = name.charAt(0).toUpperCase();
+        escucharFinanzasIndex();
+    } else {
+        // ¡AQUÍ ESTÁ EL CAMBIO! 
+        // Si no hay usuario, mandamos a una página de registro/login de Google, 
+        // NO a la del administrador.
+        window.location.href = "registro.html"; // O la página donde tengas el botón de Google
+    }
+});
 
         function escucharFinanzasIndex() {
             db.collection("finanzas").onSnapshot((snapshot) => {
