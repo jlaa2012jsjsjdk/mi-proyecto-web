@@ -27,11 +27,11 @@
             background-color: var(--bg-dark); 
             color: var(--text-main); 
             font-family: 'Plus Jakarta Sans', sans-serif;
-            display: none; /* Se activa con el script de Firebase */
+            display: none; 
             overflow-x: hidden;
         }
 
-        /* SIDEBAR ACTUALIZADA A COMUNIDAD */
+        /* SIDEBAR */
         .sidebar { 
             width: 280px; height: 100vh; 
             background: var(--sidebar-bg); 
@@ -42,7 +42,36 @@
         }
 
         .logo-box { margin-bottom: 30px; }
-        .logo-main { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+        
+        /* CONTENEDOR DEL LOGO + BOTÓN ADMIN */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Empuja el botón al lado del logo */
+        }
+
+        .logo-main { 
+            color: var(--neon-cyan); 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); 
+        }
+
+        /* BOTÓN ADMIN DISCRETO JUNTO AL LOGO */
+        .admin-secret-btn {
+            text-decoration: none;
+            color: rgba(148, 163, 184, 0.1); /* Muy transparente para que no se note */
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .admin-secret-btn:hover {
+            color: var(--neon-cyan);
+            opacity: 1;
+        }
+
         .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
 
         .user-profile {
@@ -76,7 +105,6 @@
             border-left: 4px solid var(--neon-cyan);
         }
 
-        /* CONTENIDO */
         .main-content { 
             margin-left: 280px; padding: 40px 60px; 
             min-height: 100vh;
@@ -88,7 +116,6 @@
             color: white;
         }
 
-        /* GRID DE BOTONES ENTENDIBLES */
         .quick-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
@@ -120,7 +147,6 @@
         .bg-buzon { background: rgba(236, 72, 153, 0.1); color: var(--neon-pink); }
         .bg-iniciativas { background: rgba(139, 92, 246, 0.1); color: var(--neon-purple); }
 
-        /* RESUMEN FINANCIERO */
         .summary-card { 
             background: rgba(30, 41, 59, 0.5); 
             backdrop-filter: blur(10px);
@@ -150,7 +176,12 @@
 
     <aside class="sidebar">
         <div class="logo-box">
-            <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+            <div class="logo-container">
+                <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+                <a href="login.html" class="admin-secret-btn">
+                    <i class="fas fa-user-shield"></i>
+                </a>
+            </div>
             <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
         </div>
         
