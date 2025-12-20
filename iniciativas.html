@@ -26,7 +26,6 @@
             display: flex; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* SIDEBAR CORREGIDO - SOLO RUTAS DE USUARIO */
         .sidebar { 
             width: 280px; height: 100vh; background: var(--sidebar-bg); 
             position: fixed; left: 0; top: 0; border-right: 2px solid rgba(6, 182, 212, 0.2); 
@@ -44,11 +43,9 @@
         }
         .nav-link:hover, .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
-        /* CONTENIDO */
         .main-content { margin-left: 280px; padding: 40px 60px; flex-grow: 1; background: radial-gradient(circle at bottom left, #1e1b4b, #020617); }
         .welcome-section h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; color: white; }
 
-        /* TARJETAS */
         .quick-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 20px; margin: 30px 0 50px 0; }
         .btn-crear-card {
             background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
@@ -64,7 +61,6 @@
 
         .btn-apoyar-neon { background: #2563eb; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%; margin-top: 10px; }
 
-        /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 10000; align-items: center; justify-content: center; }
         .modal-content { background: var(--card-bg); padding: 40px; border-radius: 35px; width: 95%; max-width: 500px; border: 1px solid var(--neon-purple); }
         .modal input, .modal textarea { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 15px; border: 1px solid #334155; background: #0f172a; color: white; }
@@ -73,19 +69,19 @@
 <body>
 
     <aside class="sidebar">
-    <div class="logo-box">
-        <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
-        <div class="logo-sub">Comunidad Estudiantil</div>
-    </div>
-    <nav class="nav-menu">
-        <a href="index.html" class="nav-link"><i class="fas fa-house"></i> INICIO</a>
-        <a href="entrevista-mantenimiento.html" class="nav-link"><i class="fas fa-clipboard-check"></i> ENTREVISTA</a>
-        <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> VOTACIONES</a>
-        <a href="iniciativas.html" class="nav-link active"><i class="fas fa-lightbulb"></i> PROYECTOS</a>
-        <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> TRANSPARENCIA</a>
-        <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> SUGERENCIAS</a>
-    </nav>
-</aside>
+        <div class="logo-box">
+            <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+            <div class="logo-sub">Comunidad Estudiantil</div>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-link"><i class="fas fa-house"></i> INICIO</a>
+            <a href="entrevista-mantenimiento.html" class="nav-link"><i class="fas fa-clipboard-check"></i> ENTREVISTA</a>
+            <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> VOTACIONES</a>
+            <a href="iniciativas.html" class="nav-link active"><i class="fas fa-lightbulb"></i> PROYECTOS</a>
+            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> TRANSPARENCIA</a>
+            <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> SUGERENCIAS</a>
+        </nav>
+    </aside>
 
     <main class="main-content">
         <header class="welcome-section">
@@ -120,66 +116,71 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
-            authDomain: "voxschola.firebaseapp.com",
-            projectId: "voxschola",
-            storageBucket: "voxschola.firebasestorage.app",
-            messagingSenderId: "730366058404",
-            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
-        const USER_ID = localStorage.getItem('user_id_vox') || 'u' + Date.now();
-        localStorage.setItem('user_id_vox', USER_ID);
+    const firebaseConfig = {
+        apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+        authDomain: "voxschola.firebaseapp.com",
+        projectId: "voxschola",
+        storageBucket: "voxschola.firebasestorage.app",
+        messagingSenderId: "730366058404",
+        appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-        function crearNuevaIniciativa() {
-            const t = document.getElementById('tituloIdea').value;
-            const d = document.getElementById('descIdea').value;
-            if(!t || !d) return alert("Escribe título y descripción");
-
-            db.collection("iniciativas").add({
-                titulo: t, descripcion: d, categoria: "COMUNITARIO", 
-                apoyos: 0, fechaCreacion: Date.now(), votantes: []
-            }).then(() => {
-                document.getElementById('modalIdea').style.display = 'none';
-                document.getElementById('tituloIdea').value = "";
-                document.getElementById('descIdea').value = "";
-            });
-        }
-
-        window.votarIniciativa = function(id) {
-            const docRef = db.collection("iniciativas").doc(id);
-            docRef.get().then((doc) => {
-                const data = doc.data();
-                if (data.votantes && data.votantes.includes(USER_ID)) return alert("Ya apoyaste esto.");
-                docRef.update({
-                    apoyos: (data.apoyos || 0) + 1,
-                    votantes: firebase.firestore.FieldValue.arrayUnion(USER_ID)
-                });
-            });
-        }
-
-        db.collection("iniciativas").orderBy("fechaCreacion", "desc").onSnapshot((snap) => {
-            const activas = document.getElementById('contenedor-activas');
-            activas.innerHTML = "";
-            snap.forEach((s) => {
-                const data = s.data();
-                const porcentaje = Math.min(((data.apoyos || 0) / 200) * 100, 100);
-                activas.innerHTML += `
-                    <div class="idea-card">
-                        <h3 style="margin: 0; color: white;">${data.titulo}</h3>
-                        <p style="font-size: 0.85rem; color: var(--text-dim);">${data.descripcion}</p>
-                        <div class="progress-bar-container"><div class="progress-fill" style="width: ${porcentaje}%"></div></div>
-                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight: bold;">
-                            <span>${data.apoyos || 0} / 200 APOYOS</span>
-                            <span style="color: var(--neon-cyan);">ACTIVA</span>
-                        </div>
-                        <button class="btn-apoyar-neon" onclick="votarIniciativa('${s.id}')">APOYAR PROYECTO</button>
-                    </div>`;
-            });
+    // Cargar datos sin pedir password
+    db.collection("iniciativas").orderBy("fechaCreacion", "desc").onSnapshot((snap) => {
+        const activas = document.getElementById('contenedor-activas');
+        if(!activas) return;
+        activas.innerHTML = "";
+        snap.forEach((s) => {
+            const data = s.data();
+            const porcentaje = Math.min(((data.apoyos || 0) / 200) * 100, 100);
+            activas.innerHTML += `
+                <div class="idea-card">
+                    <h3 style="margin: 0; color: white;">${data.titulo}</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-dim);">${data.descripcion}</p>
+                    <div class="progress-bar-container"><div class="progress-fill" style="width: ${porcentaje}%"></div></div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight: bold;">
+                        <span>${data.apoyos || 0} / 200 APOYOS</span>
+                        <span style="color: var(--neon-cyan);">ACTIVA</span>
+                    </div>
+                    <button class="btn-apoyar-neon" onclick="solicitarVoto('${s.id}')">APOYAR PROYECTO</button>
+                </div>`;
         });
-    </script>
+    });
+
+    // Función para votar con correo
+    window.solicitarVoto = function(id) {
+        const email = prompt("Ingresa tu correo institucional para votar:");
+        if (!email || !email.includes("@")) return alert("Correo no válido");
+
+        const docRef = db.collection("iniciativas").doc(id);
+        docRef.get().then((doc) => {
+            const data = doc.data();
+            const votantes = data.votantes || [];
+            if (votantes.includes(email)) return alert("Ya votaste con este correo");
+
+            docRef.update({
+                apoyos: firebase.firestore.FieldValue.increment(1),
+                votantes: firebase.firestore.FieldValue.arrayUnion(email)
+            }).then(() => alert("¡Voto registrado!"));
+        });
+    };
+
+    // Crear iniciativa
+    window.crearNuevaIniciativa = function() {
+        const t = document.getElementById('tituloIdea').value;
+        const d = document.getElementById('descIdea').value;
+        if(!t || !d) return alert("Llena los campos");
+
+        db.collection("iniciativas").add({
+            titulo: t, descripcion: d, apoyos: 0, 
+            fechaCreacion: Date.now(), votantes: []
+        }).then(() => {
+            document.getElementById('modalIdea').style.display = 'none';
+            alert("Idea lanzada");
+        });
+    };
+</script>
 </body>
 </html>
