@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración Financiera | Vox Schola</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-section { padding: 30px; background: #f8fafc; min-height: 100vh; }
+        
+        .finance-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .stat-card h3 { font-size: 0.9rem; color: #64748b; margin-bottom: 10px; }
+        .stat-card p { font-size: 1.5rem; font-weight: bold; color: #1e293b; }
+
+        .transaction-form {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .btn-add {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f1f5f9; padding: 15px; text-align: left; color: #475569; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; }
+
+        .tipo-ingreso { color: #10b981; font-weight: bold; }
+        .tipo-gasto { color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" style="display: flex;">
+        <aside class="sidebar">
+            <div class="logo"><i class="fas fa-user-shield"></i> Admin Panel</div>
+            <nav class="nav-menu">
+                <a href="admin-graficas.html" class="nav-link"><i class="fas fa-chart-pie"></i> Estadísticas</a>
+                <a href="admin-votaciones.html" class="nav-link"><i class="fas fa-poll-h"></i> Votaciones</a>
+                <a href="admin-finanzas.html" class="nav-link active"><i class="fas fa-cash-register"></i> Finanzas</a>
+                <a href="admin-buzon.html" class="nav-link"><i class="fas fa-inbox"></i> Buzón de Quejas</a>
+                <a href="admin-iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+                
+                <div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                    <a href="index.html" class="nav-link" style="color: #f87171;"><i class="fas fa-arrow-left"></i> Salir al Sitio</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content" style="flex-grow: 1;">
+            <div class="admin-section">
+                <h1>💰 Gestión de Tesorería</h1>
+                <p style="color: #64748b; margin-bottom: 30px;">Registra y supervisa los fondos de la sociedad de alumnos.</p>
+
+                <div class="finance-summary">
+                    <div class="stat-card">
+                        <h3>TOTAL INGRESOS</h3>
+                        <p id="total-ingresos" style="color: #10b981;">$0.00</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>TOTAL GASTOS</h3>
+                        <p id="total-gastos" style="color: #ef4444;">$0.00</p>
+                    </div>
+                    <div class="stat-card" style="background: #1e293b;">
+                        <h3 style="color: #94a3b8;">BALANCE NETO</h3>
+                        <p id="total-balance" style="color: white;">$0.00</p>
+                    </div>
+                </div>
+
+                <div class="transaction-form">
+                    <h3 style="margin-bottom: 15px;">Registrar Movimiento</h3>
+                    <div class="form-grid">
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: bold;">Concepto</label>
+                            <input type="text" id="desc" placeholder="Ej: Venta de boletos, Compra de balones...">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: bold;">Monto</label>
+                            <input type="number" id="monto" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: bold;">Tipo</label>
+                            <select id="tipo">
+                                <option value="ingreso">Ingreso (+)</option>
+                                <option value="gasto">Gasto (-)</option>
+                            </select>
+                        </div>
+                        <button class="btn-add" onclick="agregarMovimiento()">Guardar</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Concepto</th>
+                                <th>Tipo</th>
+                                <th>Monto</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-finanzas">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+            authDomain: "voxschola.firebaseapp.com",
+            projectId: "voxschola",
+            storageBucket: "voxschola.firebasestorage.app",
+            messagingSenderId: "730366058404",
+            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        async function agregarMovimiento() {
+            const desc = document.getElementById('desc').value;
+            const monto = parseFloat(document.getElementById('monto').value);
+            const tipo = document.getElementById('tipo').value;
+
+            if(!desc || !monto) return alert("Completa los datos");
+
+            await db.collection("finanzas").add({
+                descripcion: desc,
+                monto: monto,
+                tipo: tipo,
+                fecha: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            document.getElementById('desc').value = "";
+            document.getElementById('monto').value = "";
+            cargarFinanzas();
+        }
+
+        async function cargarFinanzas() {
+            const snapshot = await db.collection("finanzas").orderBy("fecha", "desc").get();
+            const contenedor = document.getElementById('lista-finanzas');
+            let ingresos = 0, gastos = 0;
+            
+            contenedor.innerHTML = "";
+            snapshot.forEach(doc => {
+                const f = doc.data();
+                const monto = parseFloat(f.monto);
+                const fecha = f.fecha ? f.fecha.toDate().toLocaleDateString() : '---';
+
+                if(f.tipo === 'ingreso') ingresos += monto;
+                else gastos += monto;
+
+                contenedor.innerHTML += `
+                    <tr>
+                        <td>${fecha}</td>
+                        <td>${f.descripcion}</td>
+                        <td class="tipo-${f.tipo}">${f.tipo.toUpperCase()}</td>
+                        <td>$${monto.toFixed(2)}</td>
+                        <td><button onclick="eliminar('${doc.id}')" style="border:none; color:red; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('total-ingresos').innerText = `$${ingresos.toFixed(2)}`;
+            document.getElementById('total-gastos').innerText = `$${gastos.toFixed(2)}`;
+            document.getElementById('total-balance').innerText = `$${(ingresos - gastos).toFixed(2)}`;
+        }
+
+        async function eliminar(id) {
+            if(confirm("¿Borrar este registro?")) {
+                await db.collection("finanzas").doc(id).delete();
+                cargarFinanzas();
+            }
+        }
+
+        window.onload = cargarFinanzas;
+    </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | Vox Schola</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para la vista de Perfil */
+        .profile-header-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .avatar-large {
+            width: 100px;
+            height: 100px;
+            background: #0f172a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .profile-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .status-badge-profile {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .data-item {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .data-item label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .data-item span {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .btn-edit-profile {
+            margin-top: 20px;
+            background: #f1f5f9;
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-edit-profile:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo"><i class="fas fa-layer-group"></i> Vox Schola</div>
+        
+        <div class="user-profile">
+            <div class="avatar">J</div>
+            <div class="user-info">
+                <strong>Jose Luis A.</strong>
+                <span><i class="fas fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> Verificado</span>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-link"><i class="fas fa-house"></i> Inicio</a>
+            <a href="votaciones.html" class="nav-link"><i class="fas fa-poll"></i> Votaciones</a>
+            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-pie"></i> Finanzas</a>
+            <a href="buzon.html" class="nav-link"><i class="fas fa-envelope"></i> Buzón</a>
+            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+            <a href="perfil.html" class="nav-link active"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="welcome-section">
+            <h1>Configuración de Cuenta</h1>
+            <p>Gestiona tu información y preferencias personales.</p>
+        </header>
+
+        <section class="profile-header-card">
+            <div class="avatar-large">J</div>
+            <div class="profile-info">
+                <h2>Jose Luis A.</h2>
+                <div class="status-badge-profile">
+                    <i class="fas fa-check-circle"></i> Alumno Verificado
+                </div>
+                <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9rem;">
+                    Miembro desde: Agosto 2024
+                </p>
+            </div>
+        </section>
+
+        <div class="summary-container">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Datos Personales</h3>
+                </div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <label>Correo Institucional</label>
+                        <span>jose.luis@voxschola.edu</span>
+                    </div>
+                    <div class="data-item">
+                        <label>Matrícula</label>
+                        <span>VX-2024-0892</span>
+                    </div>
+                    <div class="data-item">
+                        <label>Rol</label>
+                        <span>Estudiante Activo</span>
+                    </div>
+                    <div class="data-item">
+                        <label>Estatus</label>
+                        <span style="color: #10b981;">Al Corriente</span>
+                    </div>
+                </div>
+                <button class="btn-edit-profile">Editar Información</button>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h3>Tu Actividad</h3>
+                </div>
+                <div class="vote-item" style="margin-bottom: 25px;">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Participación en Votaciones</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 100%; background: #2563eb;"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span>12/12 Votos</span>
+                        <span>¡Ciudadano Ejemplar!</span>
+                    </div>
+                </div>
+                <div class="vote-item">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Iniciativas Apoyadas</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 75%; background: #8b5cf6;"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span>15 Apoyos</span>
+                        <span>Líder de Opinión</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gran Misión de Identidad | Vox Schola</title>
+    <style>
+        :root { --p-blue: #38bdf8; --p-gold: #fbbf24; --p-bg: #0f172a; }
+        body { background: var(--p-bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .card { background: #1e293b; padding: 30px; border-radius: 30px; text-align: center; border: 3px solid var(--p-blue); width: 90%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .btn { background: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; color: #0f172a; transition: 0.2s; font-size: 0.85rem; }
+        .btn:hover { background: var(--p-blue); color: white; transform: scale(1.03); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .progress-bar { width: 100%; height: 8px; background: #334155; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #progress-fill { width: 14%; height: 100%; background: var(--p-blue); transition: 0.5s; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="game-card">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <div id="step-label" style="font-size: 0.7rem; color: var(--p-blue); margin-bottom: 10px;">PASO 1 DE 7</div>
+        <h2 id="pregunta">¿Cuál es tu deporte favorito? ⚽</h2>
+        <div class="grid" id="opciones">
+            <button class="btn" onclick="guardar('deporte', 'Futbol')">Fútbol</button>
+            <button class="btn" onclick="guardar('deporte', 'Basquet')">Básquet</button>
+            <button class="btn" onclick="guardar('deporte', 'Voley')">Vóley</button>
+            <button class="btn" onclick="guardar('deporte', 'Ninguno')">Otro / Ninguno</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+            authDomain: "voxschola.firebaseapp.com",
+            projectId: "voxschola",
+            storageBucket: "voxschola.firebasestorage.app",
+            messagingSenderId: "730366058404",
+            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        let etapa = 1;
+        let respuestas = {};
+
+        async function guardar(cat, valor) {
+            // Deshabilitar botones para evitar doble clic
+            const botones = document.querySelectorAll('.btn');
+            botones.forEach(b => b.disabled = true);
+
+            respuestas[cat] = valor;
+
+            try {
+                // Guardar en Firebase con la estructura que lee el Admin
+                await db.collection("datos_alumnos").add({ 
+                    categoria: cat, 
+                    opcion: valor, 
+                    fecha: firebase.firestore.FieldValue.serverTimestamp() 
+                });
+
+                etapa++;
+                if (etapa <= 7) {
+                    actualizarInterfaz();
+                } else {
+                    finalizar();
+                }
+            } catch (error) {
+                console.error("Error al guardar:", error);
+                alert("Hubo un error de conexión. Intenta de nuevo.");
+                botones.forEach(b => b.disabled = false);
+            }
+        }
+
+        function actualizarInterfaz() {
+            const p = document.getElementById('pregunta');
+            const o = document.getElementById('opciones');
+            const s = document.getElementById('step-label');
+            const f = document.getElementById('progress-fill');
+            
+            f.style.width = (etapa * 14.2) + "%";
+            s.innerText = `PASO ${etapa} DE 7`;
+
+            if (etapa === 2) {
+                p.innerText = "¿Qué haces en tu tiempo libre? 🎮";
+                o.innerHTML = `
+                    <button class="btn" onclick="guardar('hobby', 'Videojuegos')">Videojuegos</button>
+                    <button class="btn" onclick="guardar('hobby', 'Lectura')">Leer Libros</button>
+                    <button class="btn" onclick="guardar('hobby', 'TikTok')">Ver TikToks</button>
+                    <button class="btn" onclick="guardar('hobby', 'Dibujo')">Arte / Dibujo</button>
+                `;
+            } else if (etapa === 3) {
+                p.innerText = "¿Cuál es tu materia favorita? 📚";
+                o.innerHTML = `
+                    <button class="btn" onclick="guardar('materia', 'Mate')">Matemáticas</button>
+                    <button class="btn" onclick="guardar('materia', 'Artes')">Artes / Música</button>
+                    <button class="btn" onclick="guardar('materia', 'Ciencias')">Ciencias</button>
+                    <button class="btn" onclick="guardar('materia', 'Deportes')">Ed. Física</button>
+                `;
+            } else if (etapa === 4) {
+                p.innerText = "¿Qué comida prefieres en el recreo? 🍕";
+                o.innerHTML = `
+                    <button class="btn" onclick="guardar('comida', 'Pizza')">Pizza / Burger</button>
+                    <button class="btn" onclick="guardar('comida', 'Tacos')">Tacos / Tortas</button>
+                    <button class="btn" onclick="guardar('comida', 'Saludable')">Fruta / Yogurt</button>
+                    <button class="btn" onclick="guardar('comida', 'Dulces')">Dulces / Papitas</button>
+                `;
+            } else if (etapa === 5) {
+                p.innerText = "¿Cómo prefieres estudiar? 🎧";
+                o.innerHTML = `
+                    <button class="btn" onclick="guardar('estudio', 'Solo')">En silencio</button>
+                    <button class="btn" onclick="guardar('estudio', 'Musica')">Con Música</button>
+                    <button class="btn" onclick="guardar('estudio', 'Grupo')">Con Amigos</button>
+                    <button class="btn" onclick="guardar('estudio', 'Video')">Viendo Youtube</button>
+                `;
+            } else if (etapa === 6) {
+                p.innerText = "¿Qué le falta a la escuela? ✨";
+                o.innerHTML = `
+                    <button class="btn" onclick="guardar('mejora', 'Eventos')">Más Fiestas</button>
+                    <button class="btn" onclick="guardar('mejora', 'Deporte')">Más Torneos</button>
+                    <button class="btn" onclick="guardar('mejora', 'Tech')">Mejor WiFi</button>
+                    <button class="btn" onclick="guardar('mejora', 'Areas')">Zonas de Descanso</button>
+                `;
+            } else if (etapa === 7) {
+                p.innerText = "¿Te consideras... 🧠";
+                o.innerHTML = `
+                    <button class="btn" onclick="guardar('perfil', 'Lider')">Un Líder</button>
+                    <button class="btn" onclick="guardar('perfil', 'Creativo')">Un Creativo</button>
+                    <button class="btn" onclick="guardar('perfil', 'Analitico')">Un Analítico</button>
+                    <button class="btn" onclick="guardar('perfil', 'Social')">El Alma de la Fiesta</button>
+                `;
+            }
+        }
+
+        function finalizar() {
+            let rango = "Estudiante Estrella"; let ico = "⭐";
+            const perfil = respuestas['perfil'];
+            const hobby = respuestas['hobby'];
+
+            if(perfil === 'Lider') { rango = "Capitán Vox"; ico = "🏆"; }
+            else if(perfil === 'Creativo') { rango = "Mente Brillante"; ico = "🎨"; }
+            else if(hobby === 'Videojuegos') { rango = "Cyber Master"; ico = "🎮"; }
+            else if(perfil === 'Analitico') { rango = "Genio Táctico"; ico = "🧠"; }
+
+            localStorage.setItem('user_rank', rango);
+            localStorage.setItem('user_icon', ico);
+
+            document.getElementById('game-card').innerHTML = `
+                <h1 style="color:var(--p-gold)">¡MISIÓN CUMPLIDA! 🏆</h1>
+                <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:20px; margin:20px 0; border: 2px solid var(--p-gold);">
+                    <span style="font-size:3rem">${ico}</span>
+                    <h3>Rango: ${rango}</h3>
+                </div>
+                <p>Ahora eres un miembro oficial verificado de Vox Schola.</p>
+                <button class="btn" style="width:100%" onclick="location.href='index.html'">ENTRAR AL PORTAL</button>
+            `;
+        }
+    </script>
+</body>
+</html>

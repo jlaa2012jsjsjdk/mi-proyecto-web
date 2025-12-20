@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas | Vox Schola Admin</title>
+    <link rel="stylesheet" href="estilos.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            margin-left: 260px; 
+            padding: 30px;
+            display: block;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 300px; 
+        }
+
+        .header-stats {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body style="background-color: #f8fafc; margin: 0;">
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo"><i class="fas fa-user-shield"></i> Admin Panel</div>
+            <nav class="nav-menu">
+                <a href="admin-graficas.html" class="nav-link active"><i class="fas fa-chart-pie"></i> Estadísticas</a>
+                <a href="admin-votaciones.html" class="nav-link"><i class="fas fa-poll-h"></i> Votaciones</a>
+                <a href="admin-finanzas.html" class="nav-link"><i class="fas fa-cash-register"></i> Finanzas</a>
+                <a href="admin-buzon.html" class="nav-link"><i class="fas fa-inbox"></i> Buzón</a>
+                <a href="index.html" class="nav-link" style="margin-top:20px; color:#f87171;"><i class="fas fa-arrow-left"></i> Volver</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="header-stats">
+                <div>
+                    <h1 style="color: #1e293b; font-size: 1.6rem;">📊 Análisis Global</h1>
+                    <p style="color: #64748b;">Resultados en tiempo real distribuidos horizontalmente</p>
+                </div>
+                <button onclick="cargarDatosAdmin()" style="background:#2563eb; color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer; font-weight: bold;">
+                    <i class="fas fa-sync-alt"></i> Actualizar Todo
+                </button>
+            </div>
+
+            <div class="admin-grid">
+                <div class="chart-card">
+                    <h4 style="margin-bottom:15px; color:#475569;">Participación por Hobbies</h4>
+                    <div class="chart-wrapper"><canvas id="chartHobbies"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <h4 style="margin-bottom:15px; color:#475569;">Prioridades de Mejora</h4>
+                    <div class="chart-wrapper"><canvas id="chartMejoras"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <h4 style="margin-bottom:15px; color:#475569;">Tendencias Gastronómicas</h4>
+                    <div class="chart-wrapper"><canvas id="chartComidas"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <h4 style="margin-bottom:15px; color:#475569;">Perfiles Estudiantiles</h4>
+                    <div class="chart-wrapper"><canvas id="chartPerfiles"></canvas></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+            authDomain: "voxschola.firebaseapp.com",
+            projectId: "voxschola",
+            storageBucket: "voxschola.firebasestorage.app",
+            messagingSenderId: "730366058404",
+            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+        };
+        
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        let misGraficas = [];
+
+        async function cargarDatosAdmin() {
+            // Limpiar gráficas anteriores
+            misGraficas.forEach(g => g.destroy());
+            misGraficas = [];
+
+            try {
+                const snapshot = await db.collection("datos_alumnos").get();
+                const docs = snapshot.docs.map(doc => doc.data());
+
+                const procesar = (categoria) => {
+                    const conteo = {};
+                    docs.forEach(d => {
+                        if (d.categoria === categoria || d.cat === categoria) {
+                            const valor = d.opcion || d.val || "Otros";
+                            conteo[valor] = (conteo[valor] || 0) + 1;
+                        }
+                    });
+                    return conteo;
+                };
+
+                const colores = ['#6366f1', '#f43f5e', '#eab308', '#22c55e', '#a855f7', '#f97316'];
+
+                dibujar('chartHobbies', 'bar', 'Hobbies', procesar('hobby'), '#6366f1');
+                dibujar('chartMejoras', 'doughnut', 'Votos', procesar('mejora'), colores);
+                dibujar('chartComidas', 'pie', 'Votos', procesar('comida'), colores);
+                dibujar('chartPerfiles', 'polarArea', 'Alumnos', procesar('perfil'), colores);
+
+            } catch (e) {
+                console.error("Error cargando datos:", e);
+            }
+        }
+
+        function dibujar(id, tipo, label, dataMap, colores) {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            const g = new Chart(ctx, {
+                type: tipo,
+                data: {
+                    labels: Object.keys(dataMap),
+                    datasets: [{
+                        label: label,
+                        data: Object.values(dataMap),
+                        backgroundColor: colores,
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+            misGraficas.push(g);
+        }
+
+        window.onload = cargarDatosAdmin;
+    </script>
+</body>
+</html>
