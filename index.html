@@ -43,11 +43,10 @@
 
         .logo-box { margin-bottom: 30px; }
         
-        /* CONTENEDOR DEL LOGO + BOTÓN ADMIN */
         .logo-container {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Empuja el botón al lado del logo */
+            justify-content: space-between;
         }
 
         .logo-main { 
@@ -60,10 +59,9 @@
             text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); 
         }
 
-        /* BOTÓN ADMIN DISCRETO JUNTO AL LOGO */
         .admin-secret-btn {
             text-decoration: none;
-            color: rgba(148, 163, 184, 0.1); /* Muy transparente para que no se note */
+            color: rgba(148, 163, 184, 0.1); 
             font-size: 0.9rem;
             transition: 0.3s;
         }
@@ -194,16 +192,14 @@
         </div>
 
         <nav class="nav-menu">
-            <a href="index.html" class="nav-link active"><i class="fas fa-house"></i> Inicio</a>
-            <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> Centro de Votos</a>
-            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> Transparencia</a>
-            <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> Sugerencias</a>
-            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Proyectos</a>
-            <a href="#" class="nav-link btn-logout" onclick="logout()">
-                <i class="fas fa-power-off"></i> Salir del Sistema
-            </a>
-        </nav>
-    </aside>
+        <a href="index.html" class="nav-link"><i class="fas fa-house"></i> INICIO</a>
+        <a href="entrevista-mantenimiento.html" class="nav-link"><i class="fas fa-clipboard-check"></i> ENTREVISTA</a>
+        <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> VOTACIONES</a>
+        <a href="iniciativas.html" class="nav-link active"><i class="fas fa-lightbulb"></i> PROYECTOS</a>
+        <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-line"></i> TRANSPARENCIA</a>
+        <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> SUGERENCIAS</a>
+    </nav>
+</aside>
 
     <main class="main-content">
         <header class="welcome-section">
@@ -269,21 +265,17 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-ES', opciones);
 
         firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        // Si hay usuario de Google, mostramos la página
-        document.body.style.display = "block";
-        const name = user.displayName || "Usuario";
-        document.getElementById('user-name-display').innerText = name;
-        document.getElementById('user-greeting').innerText = name.split(' ')[0];
-        document.getElementById('user-avatar-letra').innerText = name.charAt(0).toUpperCase();
-        escucharFinanzasIndex();
-    } else {
-        // ¡AQUÍ ESTÁ EL CAMBIO! 
-        // Si no hay usuario, mandamos a una página de registro/login de Google, 
-        // NO a la del administrador.
-        window.location.href = "registro.html"; // O la página donde tengas el botón de Google
-    }
-});
+            if (user) {
+                document.body.style.display = "block";
+                const name = user.displayName || "Usuario";
+                document.getElementById('user-name-display').innerText = name;
+                document.getElementById('user-greeting').innerText = name.split(' ')[0];
+                document.getElementById('user-avatar-letra').innerText = name.charAt(0).toUpperCase();
+                escucharFinanzasIndex();
+            } else {
+                window.location.href = "login.html";
+            }
+        });
 
         function escucharFinanzasIndex() {
             db.collection("finanzas").onSnapshot((snapshot) => {

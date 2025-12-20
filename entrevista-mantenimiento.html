@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevista de Mantenimiento | Vox Schola</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #020617;
+            --card: #1e293b;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --gold: #fbbf24;
+        }
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .audit-card {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+        .header-audit {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #334155;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        #fill {
+            width: 4%;
+            height: 100%;
+            background: var(--accent);
+            transition: 0.4s ease;
+        }
+        .question-label {
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 20px 0;
+            line-height: 1.4;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .opt-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 16px;
+            border-radius: 15px;
+            text-align: left;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .opt-btn:hover {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--accent);
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="audit-card" id="audit-box">
+        <div class="header-audit">
+            <i class="fas fa-clipboard-check" style="color: var(--accent); font-size: 2rem;"></i>
+            <h2 style="margin: 10px 0 5px 0;">Auditoría Escolar</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin: 0;">Tu reporte ayuda a mejorar las instalaciones</p>
+            <div class="progress-bar"><div id="fill"></div></div>
+            <div class="question-label" id="step-txt">Reporte 1 de 25</div>
+        </div>
+
+        <div class="question-text" id="q-text">Cargando entrevista...</div>
+        <div class="options-list" id="opt-container"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+            authDomain: "voxschola.firebaseapp.com",
+            projectId: "voxschola",
+            storageBucket: "voxschola.firebasestorage.app",
+            messagingSenderId: "730366058404",
+            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const entrevista = [
+            // MANTENIMIENTO E INFRAESTRUCTURA
+            { q: "¿En qué estado se encuentran los baños hoy?", o: ["Excelentes", "Aceptables", "Necesitan limpieza", "Fuera de servicio"] },
+            { q: "¿Hay fugas de agua o llaves goteando?", o: ["Todo bien", "En los baños", "En los bebederos", "En el patio"] },
+            { q: "¿Cómo consideras la iluminación de tu salón?", o: ["Muy buena", "Faltan focos", "Muy obscuro", "Zumban las lámparas"] },
+            { q: "¿Las paredes del salón necesitan pintura?", o: ["Están limpias", "Tienen rayones", "Se están cayendo", "Urge pintura"] },
+            { q: "¿Cómo están las canchas deportivas?", o: ["Perfectas", "Piso agrietado", "Sin redes/aros", "Muy descuidadas"] },
+            { q: "¿Has notado vidrios rotos o ventanas trabadas?", o: ["Ninguno", "En mi salón", "En los pasillos", "En los baños"] },
+            { q: "¿Las áreas verdes están bien cuidadas?", o: ["Muy bonitas", "Secas", "Tienen basura", "No hay plantas"] },
+            
+            // LIMPIEZA
+            { q: "¿A qué hora notas que los botes de basura se llenan?", o: ["Después del recreo", "A la salida", "Siempre están llenos", "Están vacíos"] },
+            { q: "¿Hay hormigas o insectos en el salón?", o: ["No", "A veces", "Cerca de la comida", "Muchos"] },
+            { q: "¿Qué tan limpio está el patio después del recreo?", o: ["Limpio", "Poca basura", "Mucha basura", "Nadie recoge"] },
+            
+            // COMODIDAD
+            { q: "¿Tu silla o banco está en buen estado?", o: ["Sí, perfecto", "Se mueve mucho", "Está roto", "Me lastima"] },
+            { q: "¿Hace mucho calor o frío dentro del salón?", o: ["Clima agradable", "Mucho calor", "Mucho frío", "Falta ventilación"] },
+            
+            // ALIMENTACIÓN
+            { q: "¿La comida de la cafetería se ve fresca?", o: ["Sí, siempre", "A veces", "Se ve guardada", "No compro"] },
+            { q: "¿Hay suficientes mesas para comer?", o: ["Sí", "Faltan algunas", "Comemos parados", "Están sucias"] },
+            
+            // SOCIAL Y SEGURIDAD
+            { q: "¿Te sientes seguro en todas las áreas de la escuela?", o: ["Sí, en todas", "Menos en los baños", "Menos en el patio", "Me siento inseguro"] },
+            { q: "¿Los maestros mantienen el orden en el pasillo?", o: ["Siempre", "A veces", "Casi nunca", "Es un caos"] },
+            { q: "¿Funcionan los enchufes para conectar equipos?", o: ["Sí", "Algunos fallan", "Ninguno sirve", "No nos dejan usar"] },
+            { q: "¿Cómo calificarías el mobiliario de la biblioteca?", o: ["Cómodo", "Viejo", "Insuficiente", "No voy"] },
+            { q: "¿Hay suficientes botes de reciclaje?", o: ["Sí", "Faltan", "No hay", "Nadie los usa"] },
+            { q: "¿Qué deporte practicas más en la escuela?", o: ["Fútbol", "Básquet", "Vóley", "Ninguno"] },
+            { q: "¿Te gustaría que hubiera más torneos inter-escolares?", o: ["¡Sí!", "Tal vez", "No me gusta el deporte", "Me da igual"] },
+            { q: "¿Cómo es el trato del personal de limpieza?", o: ["Muy amables", "Respetuosos", "Poco amables", "No hablo con ellos"] },
+            { q: "¿Hay ruido excesivo afuera de tu salón?", o: ["No", "A veces", "Mucho ruido", "Interrumpe la clase"] },
+            { q: "¿Qué mejora es la más urgente?", o: ["Los Baños", "Las Canchas", "La Cafetería", "La Tecnología"] },
+            { q: "¿Recomendarías esta escuela a un amigo?", o: ["Claro que sí", "Sí", "Tal vez", "No"] }
+        ];
+
+        let index = 0;
+        let userN = "Estudiante";
+
+        firebase.auth().onAuthStateChanged(user => {
+            if(user) { 
+                userN = user.displayName || user.email;
+                render(); 
+            } else { 
+                window.location.href = "registro.html"; 
+            }
+        });
+
+        function render() {
+            if(index >= entrevista.length) {
+                document.getElementById('audit-box').innerHTML = `
+                    <div style="text-align:center; padding: 20px;">
+                        <i class="fas fa-check-circle" style="color:var(--success); font-size:4rem;"></i>
+                        <h2 style="margin-top:20px;">Reporte Enviado</h2>
+                        <p>Gracias por ayudarnos a mantener la escuela en excelentes condiciones.</p>
+                        <button class="opt-btn" style="width:100%; justify-content:center; margin-top:20px; background:var(--accent); color:var(--bg)" onclick="location.href='index.html'">Finalizar</button>
+                    </div>`;
+                return;
+            }
+
+            const data = entrevista[index];
+            document.getElementById('q-text').innerText = data.q;
+            document.getElementById('step-txt').innerText = `Reporte ${index + 1} de 25`;
+            document.getElementById('fill').style.width = `${((index+1)/25)*100}%`;
+
+            const container = document.getElementById('opt-container');
+            container.innerHTML = "";
+            data.o.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.innerHTML = `<i class="far fa-circle"></i> ${opt}`;
+                btn.onclick = () => save(data.q, opt);
+                container.appendChild(btn);
+            });
+        }
+
+        async function save(p, r) {
+    try {
+        await db.collection("mantenimiento_reportes").add({
+            alumno: userN || "Anónimo",
+            pregunta: p,
+            respuesta: r,
+            fecha: firebase.firestore.FieldValue.serverTimestamp() // Usa el tiempo del servidor para ordenarlos
+        });
+        index++;
+        render();
+    } catch(e) { 
+        alert("Error al enviar reporte. Verifica las reglas en la consola de Firebase."); 
+    }
+}
+    </script>
+</body>
+</html>
