@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Comunidad | VOX</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center;
+            background: #020617; font-family: sans-serif; color: white;
+        }
+        .login-card {
+            background: #0f172a; padding: 40px; border-radius: 30px; border: 1px solid #06b6d4;
+            text-align: center; width: 90%; max-width: 400px;
+        }
+        .btn-google {
+            background: white; color: #444; padding: 15px; border-radius: 12px;
+            text-decoration: none; display: flex; align-items: center; justify-content: center;
+            gap: 10px; font-weight: bold; cursor: pointer; border: none; width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <i class="fas fa-users" style="font-size: 3rem; color: #06b6d4; margin-bottom: 20px;"></i>
+        <h2>Bienvenido a VOX</h2>
+        <p style="color: #94a3b8; margin-bottom: 30px;">Inicia sesión con tu cuenta escolar o personal para continuar.</p>
+        
+        <button onclick="loginConGoogle()" class="btn-google">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20">
+            Entrar con Google
+        </button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+            authDomain: "voxschola.firebaseapp.com",
+            projectId: "voxschola",
+            storageBucket: "voxschola.firebasestorage.app",
+            messagingSenderId: "730366058404",
+            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        function loginConGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider)
+                .then(() => {
+                    window.location.href = "index.html"; // Regresa al inicio ya logueado
+                })
+                .catch((error) => {
+                    alert("Error al iniciar sesión: " + error.message);
+                });
+        }
+    </script>
+</body>
+</html>
