@@ -74,11 +74,11 @@
                 <a href="admin-finanzas.html" class="nav-link"><i class="fas fa-cash-register"></i> Finanzas</a>
                 <a href="admin-buzon.html" class="nav-link"><i class="fas fa-inbox"></i> Buzón de Quejas</a>
                 <a href="admin-iniciativas.html" class="nav-link active"><i class="fas fa-lightbulb"></i> Iniciativas</a>
-                <a href="index.html" class="nav-link return-link">
-    <i class="fas fa-arrow-left"></i> Volver al Sitio
-</a>
-                <div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                    <a href="index.html" class="nav-link" style="color: #f87171;"><i class="fas fa-arrow-left"></i> Salir al Sitio</a>
+                
+                <div style="margin-top: 50px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 20px;">
+                    <a href="index.html" class="nav-link" style="color: #6366f1; font-weight: bold;">
+                        <i class="fas fa-arrow-left"></i> Volver al Sitio
+                    </a>
                 </div>
             </nav>
         </aside>
@@ -113,56 +113,64 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        async function cargarIniciativas() {
+        function cargarIniciativas() {
             const contenedor = document.getElementById('lista-iniciativas');
-            const snapshot = await db.collection("iniciativas").orderBy("fecha", "desc").get();
             
-            document.getElementById('contador-iniciativas').innerText = `${snapshot.size} Total`;
-            contenedor.innerHTML = "";
+            // Sincronización en tiempo real con los nombres de campos correctos
+            db.collection("iniciativas").onSnapshot((snapshot) => {
+                document.getElementById('contador-iniciativas').innerText = `${snapshot.size} Total`;
+                contenedor.innerHTML = "";
 
-            if (snapshot.empty) {
-                contenedor.innerHTML = "<p>No hay iniciativas publicadas todavía.</p>";
-                return;
-            }
+                if (snapshot.empty) {
+                    contenedor.innerHTML = "<p>No hay iniciativas publicadas todavía.</p>";
+                    return;
+                }
 
-            snapshot.forEach(doc => {
-                const ini = doc.data();
-                const statusClass = ini.estado === 'Aprobada' ? 'badge-aprobada' : 'badge-pendiente';
-                
-                contenedor.innerHTML += `
-                    <div class="card-iniciativa">
-                        <div style="display: flex; justify-content: space-between; align-items: start;">
-                            <span class="badge ${statusClass}">${ini.estado || 'Pendiente'}</span>
-                            <button class="btn-action btn-eliminar" onclick="eliminarIniciativa('${doc.id}')"><i class="fas fa-trash"></i></button>
+                snapshot.forEach(doc => {
+                    const ini = doc.data();
+                    const statusClass = ini.estado === 'Aprobada' ? 'badge-aprobada' : 'badge-pendiente';
+                    
+                    contenedor.innerHTML += `
+                        <div class="card-iniciativa">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <span class="badge ${statusClass}">${ini.estado || 'Pendiente'}</span>
+                                <button class="btn-action btn-eliminar" onclick="eliminarIniciativa('${doc.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                            <h3 style="margin: 15px 0 10px 0; color: #1e293b;">${ini.titulo || 'Sin título'}</h3>
+                            <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">${ini.descripcion || 'Sin descripción'}</p>
+                            
+                            <div class="stats-iniciativa">
+                                <span><i class="fas fa-heart" style="color: #f43f5e;"></i> ${ini.apoyos || 0} Apoyos</span>
+                                <span><i class="fas fa-tag"></i> ${ini.categoria || 'General'}</span>
+                            </div>
+
+                            ${ini.estado !== 'Aprobada' ? 
+                                `<button class="btn-action btn-aprobar" onclick="aprobarIniciativa('${doc.id}')">Marcar como Aprobada</button>` 
+                                : '<div style="color: #10b981; font-weight: bold; text-align: center;"><i class="fas fa-check-double"></i> Propuesta Aceptada</div>'
+                            }
                         </div>
-                        <h3 style="margin: 15px 0 10px 0; color: #1e293b;">${ini.titulo}</h3>
-                        <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">${ini.descripcion}</p>
-                        
-                        <div class="stats-iniciativa">
-                            <span><i class="fas fa-heart" style="color: #f43f5e;"></i> ${ini.likes || 0} Apoyos</span>
-                            <span><i class="fas fa-user"></i> Por: ${ini.autor || 'Anónimo'}</span>
-                        </div>
-
-                        ${ini.estado !== 'Aprobada' ? 
-                            `<button class="btn-action btn-aprobar" onclick="aprobarIniciativa('${doc.id}')">Marcar como Aprobada</button>` 
-                            : ''
-                        }
-                    </div>
-                `;
+                    `;
+                });
             });
         }
 
         async function aprobarIniciativa(id) {
-            await db.collection("iniciativas").doc(id).update({
-                estado: 'Aprobada'
-            });
-            cargarIniciativas();
+            try {
+                await db.collection("iniciativas").doc(id).update({
+                    estado: 'Aprobada'
+                });
+            } catch (error) {
+                console.error("Error al aprobar:", error);
+            }
         }
 
         async function eliminarIniciativa(id) {
             if(confirm("¿Estás seguro de eliminar esta propuesta permanentemente?")) {
-                await db.collection("iniciativas").doc(id).delete();
-                cargarIniciativas();
+                try {
+                    await db.collection("iniciativas").doc(id).delete();
+                } catch (error) {
+                    console.error("Error al eliminar:", error);
+                }
             }
         }
 
