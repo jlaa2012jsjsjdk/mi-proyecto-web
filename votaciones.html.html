@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votaciones | Vox Schola</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .progress-container { width: 100%; background: #e2e8f0; height: 8px; border-radius: 10px; margin: 15px 0; position: relative; }
+        .progress-bar { height: 100%; border-radius: 10px; transition: width 0.5s ease-in-out; }
+        .vote-card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #64748b; font-weight: 600; }
+        .btn-votar-link { color: #2563eb; text-decoration: none; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
+        .btn-votar-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo"><i class="fas fa-layer-group"></i> Vox Schola</div>
+        <div class="user-profile">
+            <div class="avatar">J</div>
+            <div class="user-info"><strong>Jose Luis A.</strong><span><i class="fas fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> Verificado</span></div>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-link"><i class="fas fa-house"></i> Inicio</a>
+            <a href="votaciones.html" class="nav-link active"><i class="fas fa-poll"></i> Votaciones</a>
+            <a href="finanzas.html" class="nav-link"><i class="fas fa-chart-pie"></i> Finanzas</a>
+            <a href="buzon.html" class="nav-link"><i class="fas fa-envelope"></i> Buzón</a>
+            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+            <a href="perfil.html" class="nav-link"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="welcome-section">
+            <h1>Votaciones Activas</h1>
+            <p>viernes, 19 de diciembre</p>
+        </header>
+
+        <div class="quick-grid">
+            <div class="mini-card" style="border-left: 4px solid #2563eb;">
+                <div class="icon-square" style="background:#dbeafe; color:#2563eb;"><i class="fas fa-check-to-slot"></i></div>
+                <h4>Todas</h4>
+                <span>3 disponibles</span>
+            </div>
+            <div class="mini-card">
+                <div class="icon-square" style="background:#dcfce7; color:#10b981;"><i class="fas fa-clock"></i></div>
+                <h4>Recientes</h4>
+                <span>Cierran pronto</span>
+            </div>
+            <div class="mini-card">
+                <div class="icon-square" style="background:#f3e8ff; color:#a855f7;"><i class="fas fa-history"></i></div>
+                <h4>Historial</h4>
+                <span>Ver resultados</span>
+            </div>
+        </div>
+
+        <div id="contenedor-votaciones" class="summary-container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+            <p>Cargando votaciones...</p>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+            authDomain: "voxschola.firebaseapp.com",
+            projectId: "voxschola",
+            storageBucket: "voxschola.firebasestorage.app",
+            messagingSenderId: "730366058404",
+            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // FUNCIÓN PARA VOTAR
+        window.registrarVoto = async (id, votosActuales, meta) => {
+            if (votosActuales >= meta) return alert("Esta votación ya llegó al 100%");
+            const ref = doc(db, "votaciones", id);
+            await updateDoc(ref, { votos: votosActuales + 1 });
+        };
+
+        // ESCUCHA EN TIEMPO REAL
+        onSnapshot(collection(db, "votaciones"), (snapshot) => {
+            const contenedor = document.getElementById('contenedor-votaciones');
+            contenedor.innerHTML = "";
+
+            snapshot.forEach((d) => {
+                const data = d.data();
+                const id = d.id;
+                const porcentaje = Math.round((data.votos / data.meta) * 100);
+                const colorBarra = porcentaje > 80 ? "#10b981" : "#0f172a"; // Verde si está casi lista, negro/azul si no.
+
+                contenedor.innerHTML += `
+                    <div class="summary-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3 style="font-size: 1.1rem; max-width: 70%;">${data.titulo}</h3>
+                            <span class="btn-votar-link" onclick="registrarVoto('${id}', ${data.votos}, ${data.meta})">Votar ahora ></span>
+                        </div>
+                        <p style="font-size: 0.8rem; color: #64748b; margin-top: 10px;">Cierra en ${data.dias} días</p>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: ${porcentaje}%; background: ${colorBarra};"></div>
+                        </div>
+
+                        <div class="vote-card-footer">
+                            <span>${data.votos} votos</span>
+                            <span>${porcentaje}% completado</span>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>

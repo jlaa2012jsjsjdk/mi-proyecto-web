@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Iniciativas | Vox Schola Admin</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-section { padding: 30px; background: #f8fafc; min-height: 100vh; }
+        
+        .iniciativas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .card-iniciativa {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-left: 5px solid #6366f1;
+            transition: 0.3s;
+        }
+
+        .card-iniciativa:hover { transform: translateY(-5px); }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-pendiente { background: #fef9c3; color: #854d0e; }
+        .badge-aprobada { background: #dcfce7; color: #166534; }
+
+        .stats-iniciativa {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 10px 0;
+            border-top: 1px solid #f1f5f9;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .btn-action {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-aprobar { background: #10b981; color: white; width: 100%; }
+        .btn-aprobar:hover { background: #059669; }
+
+        .btn-eliminar { background: #fee2e2; color: #ef4444; margin-left: 10px; }
+    </style>
+</head>
+<body style="background-color: #f8fafc;">
+
+    <div class="app-container" style="display: flex;">
+        <aside class="sidebar">
+            <div class="logo"><i class="fas fa-user-shield"></i> Admin Panel</div>
+            <nav class="nav-menu">
+                <a href="admin-graficas.html" class="nav-link"><i class="fas fa-chart-pie"></i> Estadísticas</a>
+                <a href="admin-votaciones.html" class="nav-link"><i class="fas fa-poll-h"></i> Votaciones</a>
+                <a href="admin-finanzas.html" class="nav-link"><i class="fas fa-cash-register"></i> Finanzas</a>
+                <a href="admin-buzon.html" class="nav-link"><i class="fas fa-inbox"></i> Buzón de Quejas</a>
+                <a href="admin-iniciativas.html" class="nav-link active"><i class="fas fa-lightbulb"></i> Iniciativas</a>
+                
+                <div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                    <a href="index.html" class="nav-link" style="color: #f87171;"><i class="fas fa-arrow-left"></i> Salir al Sitio</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content" style="flex-grow: 1;">
+            <div class="admin-section">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h1>💡 Propuestas Estudiantiles</h1>
+                    <span id="contador-iniciativas" style="background: #e2e8f0; padding: 5px 15px; border-radius: 20px; font-weight: bold;">0 Total</span>
+                </div>
+                <p style="color: #64748b; margin-bottom: 30px;">Revisa las ideas de los alumnos y dales seguimiento oficial.</p>
+
+                <div id="lista-iniciativas" class="iniciativas-grid">
+                    <p>Buscando nuevas propuestas...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfJOXMY6usthm_FfYmyOAn65aHSEQytMo",
+            authDomain: "voxschola.firebaseapp.com",
+            projectId: "voxschola",
+            storageBucket: "voxschola.firebasestorage.app",
+            messagingSenderId: "730366058404",
+            appId: "1:730366058404:web:87dcb2f97265900b5f2b31"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        async function cargarIniciativas() {
+            const contenedor = document.getElementById('lista-iniciativas');
+            const snapshot = await db.collection("iniciativas").orderBy("fecha", "desc").get();
+            
+            document.getElementById('contador-iniciativas').innerText = `${snapshot.size} Total`;
+            contenedor.innerHTML = "";
+
+            if (snapshot.empty) {
+                contenedor.innerHTML = "<p>No hay iniciativas publicadas todavía.</p>";
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                const ini = doc.data();
+                const statusClass = ini.estado === 'Aprobada' ? 'badge-aprobada' : 'badge-pendiente';
+                
+                contenedor.innerHTML += `
+                    <div class="card-iniciativa">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <span class="badge ${statusClass}">${ini.estado || 'Pendiente'}</span>
+                            <button class="btn-action btn-eliminar" onclick="eliminarIniciativa('${doc.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <h3 style="margin: 15px 0 10px 0; color: #1e293b;">${ini.titulo}</h3>
+                        <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">${ini.descripcion}</p>
+                        
+                        <div class="stats-iniciativa">
+                            <span><i class="fas fa-heart" style="color: #f43f5e;"></i> ${ini.likes || 0} Apoyos</span>
+                            <span><i class="fas fa-user"></i> Por: ${ini.autor || 'Anónimo'}</span>
+                        </div>
+
+                        ${ini.estado !== 'Aprobada' ? 
+                            `<button class="btn-action btn-aprobar" onclick="aprobarIniciativa('${doc.id}')">Marcar como Aprobada</button>` 
+                            : ''
+                        }
+                    </div>
+                `;
+            });
+        }
+
+        async function aprobarIniciativa(id) {
+            await db.collection("iniciativas").doc(id).update({
+                estado: 'Aprobada'
+            });
+            cargarIniciativas();
+        }
+
+        async function eliminarIniciativa(id) {
+            if(confirm("¿Estás seguro de eliminar esta propuesta permanentemente?")) {
+                await db.collection("iniciativas").doc(id).delete();
+                cargarIniciativas();
+            }
+        }
+
+        window.onload = cargarIniciativas;
+    </script>
+</body>
+</html>
