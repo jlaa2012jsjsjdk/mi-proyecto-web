@@ -28,7 +28,7 @@
             display: flex; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* SIDEBAR UNIFICADO ALUMNOS */
+        /* SIDEBAR UNIFICADO - IDENTICO AL INDEX */
         .sidebar { 
             width: 280px; height: 100vh; background: var(--sidebar-bg); 
             position: fixed; left: 0; top: 0; border-right: 2px solid rgba(6, 182, 212, 0.2); 
@@ -39,10 +39,29 @@
         .logo-main { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
         .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
 
-        .nav-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
+        /* CUADRO DE USUARIO GRANDE */
+        .user-profile {
+            background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 20px;
+            display: flex; align-items: center; gap: 12px; border: 1px solid rgba(6, 182, 212, 0.3); 
+            margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .avatar-container {
+            min-width: 48px; height: 48px; border-radius: 14px;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+            display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 1.4rem;
+        }
+
+        .user-info { overflow: hidden; white-space: nowrap; }
+        .user-info strong { display: block; font-size: 0.95rem; color: var(--text-main); text-overflow: ellipsis; overflow: hidden; }
+        .user-info span { font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 5px; font-weight: 600; }
+
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+        
+        /* TAMAÑO DE LETRA CORREGIDO A 0.9rem */
         .nav-link {
-            text-decoration: none; color: var(--text-dim); padding: 14px 18px; border-radius: 15px;
-            display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600;
+            text-decoration: none; color: var(--text-dim); padding: 12px 16px; border-radius: 12px;
+            display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600; font-size: 0.9rem;
         }
         .nav-link:hover, .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
@@ -91,22 +110,29 @@
 <body>
 
     <aside class="sidebar">
-    <div class="logo-box">
-        <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
-        <div class="logo-sub">Comunidad Estudiantil</div>
-    </div>
-    <nav class="nav-menu">
-    <a href="index.html" class="nav-link"><i class="fas fa-house"></i> INICIO</a>
-    <a href="entrevista-mantenimiento.html" class="nav-link"><i class="fas fa-clipboard-check"></i> ENTREVISTA</a>
-    <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> VOTACIONES</a>
-    
-    <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> PROYECTOS</a>
-    
-    <a href="finanzas.html" class="nav-link active"><i class="fas fa-chart-line"></i> TRANSPARENCIA</a>
-    
-    <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> SUGERENCIAS</a>
-</nav>
-</aside>
+        <div class="logo-box">
+            <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
+            <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
+        </div>
+
+        <div class="user-profile">
+            <div class="avatar-container" id="avatar-letra">?</div>
+            <div class="user-info">
+                <strong id="user-display">Invitado</strong>
+                <span><i class="fas fa-circle" style="font-size: 0.5rem;"></i> En línea</span>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-link"><i class="fas fa-house"></i> INICIO</a>
+            <a href="entrevista-mantenimiento.html" class="nav-link"><i class="fas fa-clipboard-check"></i> ENTREVISTA</a>
+            <a href="votaciones.html" class="nav-link"><i class="fas fa-check-to-slot"></i> VOTACIONES</a>
+            <a href="iniciativas.html" class="nav-link"><i class="fas fa-lightbulb"></i> PROYECTOS</a>
+            <a href="finanzas.html" class="nav-link active"><i class="fas fa-chart-line"></i> TRANSPARENCIA</a>
+            <a href="buzon.html" class="nav-link"><i class="fas fa-comment-dots"></i> SUGERENCIAS</a>
+            <a href="#" onclick="localStorage.clear(); location.href='index.html'" class="nav-link" style="color: var(--error); margin-top: auto;"><i class="fas fa-power-off"></i> CERRAR SESIÓN</a>
+        </nav>
+    </aside>
 
     <main class="main-content">
         <header class="welcome-section">
@@ -163,6 +189,18 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+
+        // CONTROL DE SESIÓN Y USUARIO DINÁMICO
+        window.addEventListener('load', () => {
+            const user = localStorage.getItem("user_email");
+            if (user) {
+                const nombreLimpio = user.split('@')[0];
+                document.getElementById('user-display').innerText = nombreLimpio;
+                document.getElementById('avatar-letra').innerText = nombreLimpio.charAt(0).toUpperCase();
+            } else {
+                location.href = "index.html";
+            }
+        });
 
         db.collection("finanzas").orderBy("fecha", "desc").onSnapshot((snapshot) => {
             const tabla = document.getElementById("tabla-movimientos");
