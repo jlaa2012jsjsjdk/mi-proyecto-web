@@ -27,7 +27,7 @@
             background-color: var(--bg-dark); 
             color: var(--text-main); 
             font-family: 'Plus Jakarta Sans', sans-serif;
-            display: none; 
+            display: none; /* Se activa por JS */
             overflow-x: hidden;
         }
 
@@ -127,6 +127,7 @@
             <input type="email" id="emailIn" placeholder="tu-correo@ejemplo.com">
             <input type="password" id="passIn" placeholder="Tu contraseña">
             <button id="btnClickLogin" onclick="validarMatch()" class="btn-entrar">ENTRAR PAPA</button>
+            <p style="color: #475569; font-size: 0.6rem; margin-top: 15px;">v2.0.2 - Sistema de Autoregistro Activo</p>
         </div>
     </div>
 
@@ -203,6 +204,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // Mostrar fecha actual
         document.getElementById('fecha-txt').innerText = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
 
         window.onload = function() {
@@ -219,9 +221,12 @@
         }
 
         async function validarMatch() {
-            const email = document.getElementById('emailIn').value.trim().toLowerCase();
-            const pass = document.getElementById('passIn').value.trim();
+            const emailInput = document.getElementById('emailIn');
+            const passInput = document.getElementById('passIn');
             const btn = document.getElementById('btnClickLogin');
+
+            const email = emailInput.value.trim().toLowerCase();
+            const pass = passInput.value.trim();
 
             if (!email || !pass) return alert("Completa los datos, papa.");
 
@@ -248,7 +253,7 @@
                             rol: "padre",
                             fechaRegistro: Date.now()
                         });
-                        alert("¡Cuenta creada! Bienvenido.");
+                        alert("¡Cuenta creada con éxito! Bienvenido.");
                         localStorage.setItem("user_email", email);
                         location.reload();
                     } else {
@@ -257,8 +262,8 @@
                     }
                 }
             } catch (e) {
-                console.error(e);
-                alert("Error de Firebase. Revisa la consola.");
+                console.error("Error Firebase:", e);
+                alert("Error de conexión. Revisa tu internet o la configuración de Firebase.");
                 btn.innerText = "ENTRAR PAPA";
                 btn.disabled = false;
             }
@@ -272,6 +277,8 @@
                     total += (d.data().tipo === "ingreso") ? m : -m;
                 });
                 document.getElementById('saldo-h2').innerText = `$${total.toLocaleString('es-MX')}`;
+            }, error => {
+                console.error("Error cargando finanzas:", error);
             });
         }
 
