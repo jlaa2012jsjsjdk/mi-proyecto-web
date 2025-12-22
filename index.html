@@ -31,7 +31,6 @@
             overflow-x: hidden;
         }
 
-        /* SIDEBAR CORREGIDO */
         .sidebar { 
             width: 280px; height: 100vh; 
             background: var(--sidebar-bg); 
@@ -49,7 +48,6 @@
         }
         .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
 
-        /* CUADRO DE USUARIO CORREGIDO */
         .user-profile {
             background: rgba(30, 41, 59, 0.5); 
             padding: 15px; 
@@ -76,37 +74,16 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        .user-info {
-            overflow: hidden;
-            white-space: nowrap;
-        }
+        .user-info { overflow: hidden; white-space: nowrap; }
+        .user-info strong { display: block; font-size: 0.95rem; color: var(--text-main); text-overflow: ellipsis; overflow: hidden; }
+        .user-info span { font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 5px; font-weight: 600; }
 
-        .user-info strong {
-            display: block;
-            font-size: 0.95rem;
-            color: var(--text-main);
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-
-        .user-info span {
-            font-size: 0.7rem;
-            color: var(--success);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: 600;
-        }
-
-        /* RESTO DEL ESTILO */
         .nav-menu { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
         .nav-link {
             text-decoration: none; color: var(--text-dim); padding: 12px 16px; border-radius: 12px;
             display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600; font-size: 0.9rem;
         }
-        .nav-link:hover, .nav-link.active {
-            background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan);
-        }
+        .nav-link:hover, .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
         .main-content { margin-left: 280px; padding: 40px 60px; min-height: 100vh; background: radial-gradient(circle at top right, #1e1b4b, #020617); }
 
@@ -130,7 +107,6 @@
         }
         .balance-display h2 { font-size: 3rem; color: white; margin: 10px 0; text-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
 
-        /* MODAL */
         .modal-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(15px); 
@@ -238,20 +214,17 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        const opciones = { weekday: 'long', day: 'numeric', month: 'long' };
-        document.getElementById('fecha-txt').innerText = new Date().toLocaleDateString('es-ES', opciones);
+        document.getElementById('fecha-txt').innerText = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
 
         window.onload = function() {
-            const user = localStorage.getItem("user_email");
             document.body.style.display = 'block';
+            const user = localStorage.getItem("user_email");
             if (user) {
                 document.getElementById('modalLogin').style.display = 'none';
-                
                 const nombreLimpio = user.split('@')[0];
                 document.getElementById('user-display').innerText = nombreLimpio;
                 document.getElementById('saludo-nombre').innerText = nombreLimpio;
                 document.getElementById('avatar-letra').innerText = nombreLimpio.charAt(0).toUpperCase();
-                
                 escucharFinanzas();
             }
         }
@@ -264,38 +237,41 @@
             if (!email || !pass) return alert("Completa los datos, papa.");
 
             try {
-                btn.innerText = "VERIFICANDO...";
+                btn.innerText = "PROCESANDO...";
+                btn.disabled = true;
+
                 const userDoc = await db.collection("usuarios").doc(email).get();
 
                 if (userDoc.exists) {
-                    // El usuario existe, verificamos clave
                     if (userDoc.data().password === pass) {
                         localStorage.setItem("user_email", email);
                         location.reload();
                     } else {
                         alert("Contraseña incorrecta, papa.");
                         btn.innerText = "ENTRAR PAPA";
+                        btn.disabled = false;
                     }
                 } else {
-                    // EL USUARIO NO EXISTE: Registro automático
-                    const confirmar = confirm("Este correo no está registrado. ¿Deseas crear una cuenta nueva con esta contraseña?");
+                    const confirmar = confirm("Usuario nuevo detectado. ¿Deseas registrar este correo con la contraseña ingresada?");
                     if (confirmar) {
                         await db.collection("usuarios").doc(email).set({
                             password: pass,
                             rol: "padre",
                             fechaRegistro: Date.now()
                         });
-                        alert("¡Cuenta creada exitosamente, papa!");
+                        alert("¡Registro exitoso! Bienvenido a la comunidad, papa.");
                         localStorage.setItem("user_email", email);
                         location.reload();
                     } else {
                         btn.innerText = "ENTRAR PAPA";
+                        btn.disabled = false;
                     }
                 }
             } catch (e) { 
                 console.error(e);
-                alert("Error de conexión con la base de datos."); 
+                alert("Error de conexión. Revisa tu internet."); 
                 btn.innerText = "ENTRAR PAPA";
+                btn.disabled = false;
             }
         }
 
