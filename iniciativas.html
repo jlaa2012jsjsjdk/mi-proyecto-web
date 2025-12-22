@@ -37,7 +37,6 @@
         .logo-main { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
         .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
         
-        /* CUADRO DE USUARIO GRANDE */
         .user-profile {
             background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 20px;
             display: flex; align-items: center; gap: 12px; border: 1px solid rgba(6, 182, 212, 0.3); 
@@ -56,7 +55,6 @@
         
         .nav-menu { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
         
-        /* FUENTE ESTANDARIZADA A 0.9rem */
         .nav-link {
             text-decoration: none; color: var(--text-dim); padding: 12px 16px; border-radius: 12px;
             display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600; font-size: 0.9rem;
@@ -101,6 +99,7 @@
             font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: auto;
         }
         .btn-apoyar:hover { filter: brightness(1.2); transform: scale(1.02); }
+        .btn-apoyar:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; transform: none; filter: none; }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.95); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal-content { background: #1e293b; padding: 40px; border-radius: 35px; width: 450px; border: 1px solid var(--neon-purple); }
@@ -213,8 +212,13 @@
                 container.innerHTML = "";
                 snap.forEach((doc) => {
                     const data = doc.data();
+                    const id = doc.id;
                     const apoyos = data.apoyos || 0;
                     const porc = Math.min((apoyos / 200) * 100, 100);
+                    
+                    // Verificar si ya votó por esta idea
+                    const yaApoyo = localStorage.getItem("apoyo_" + id);
+
                     container.innerHTML += `
                         <div class="idea-card">
                             <span style="font-size: 0.7rem; color: var(--neon-cyan); font-weight: 800; text-transform: uppercase;">${data.categoria || 'GENERAL'}</span>
@@ -225,14 +229,37 @@
                                 <span>${apoyos} / 200 APOYOS</span>
                                 <span>${porc.toFixed(0)}%</span>
                             </div>
-                            <button class="btn-apoyar" onclick="apoyar('${doc.id}')">APOYAR PROYECTO</button>
+                            <button class="btn-apoyar" id="btn-${id}" ${yaApoyo ? 'disabled' : ''} onclick="apoyar('${id}')">
+                                ${yaApoyo ? 'PROYECTO APOYADO' : 'APOYAR PROYECTO'}
+                            </button>
                         </div>`;
                 });
             });
         }
 
         function apoyar(id) {
-            db.collection("iniciativas").doc(id).update({ apoyos: firebase.firestore.FieldValue.increment(1) });
+            const yaApoyo = localStorage.getItem("apoyo_" + id);
+            if(yaApoyo) return;
+
+            // Bloqueo inmediato del botón para evitar doble clic
+            const btn = document.getElementById('btn-' + id);
+            btn.disabled = true;
+            btn.innerText = "PROCESANDO...";
+
+            db.collection("iniciativas").doc(id).update({ 
+                apoyos: firebase.firestore.FieldValue.increment(1) 
+            }).then(() => {
+                // Guardamos en local para que no pueda volver a votar
+                localStorage.setItem("apoyo_" + id, "true");
+                
+                // El onSnapshot se encargará de actualizar el porcentaje y la barra 
+                // automáticamente en toda la interfaz de forma fluida.
+                console.log("Voto registrado con éxito, papa.");
+            }).catch((error) => {
+                console.error("Error al votar:", error);
+                btn.disabled = false;
+                btn.innerText = "REINTENTAR APOYO";
+            });
         }
 
         function crearIdea() {
