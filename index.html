@@ -159,7 +159,7 @@
             <p style="color: var(--text-dim); margin-bottom: 25px;">Ingresa tus datos registrados</p>
             <input type="email" id="emailIn" placeholder="tu-correo@ejemplo.com">
             <input type="password" id="passIn" placeholder="Tu contraseña">
-            <button onclick="validarMatch()" class="btn-entrar">ENTRAR PAPA</button>
+            <button id="btnClickLogin" onclick="validarMatch()" class="btn-entrar">ENTRAR PAPA</button>
         </div>
     </div>
 
@@ -247,7 +247,6 @@
             if (user) {
                 document.getElementById('modalLogin').style.display = 'none';
                 
-                // Actualizar cuadro de usuario con nombre limpio
                 const nombreLimpio = user.split('@')[0];
                 document.getElementById('user-display').innerText = nombreLimpio;
                 document.getElementById('saludo-nombre').innerText = nombreLimpio;
@@ -260,17 +259,44 @@
         async function validarMatch() {
             const email = document.getElementById('emailIn').value.trim().toLowerCase();
             const pass = document.getElementById('passIn').value.trim();
+            const btn = document.getElementById('btnClickLogin');
+
             if (!email || !pass) return alert("Completa los datos, papa.");
 
             try {
-                const doc = await db.collection("usuarios").doc(email).get();
-                if (doc.exists && doc.data().password === pass) {
-                    localStorage.setItem("user_email", email);
-                    location.reload();
+                btn.innerText = "VERIFICANDO...";
+                const userDoc = await db.collection("usuarios").doc(email).get();
+
+                if (userDoc.exists) {
+                    // El usuario existe, verificamos clave
+                    if (userDoc.data().password === pass) {
+                        localStorage.setItem("user_email", email);
+                        location.reload();
+                    } else {
+                        alert("Contraseña incorrecta, papa.");
+                        btn.innerText = "ENTRAR PAPA";
+                    }
                 } else {
-                    alert("Correo o contraseña incorrectos, papa.");
+                    // EL USUARIO NO EXISTE: Registro automático
+                    const confirmar = confirm("Este correo no está registrado. ¿Deseas crear una cuenta nueva con esta contraseña?");
+                    if (confirmar) {
+                        await db.collection("usuarios").doc(email).set({
+                            password: pass,
+                            rol: "padre",
+                            fechaRegistro: Date.now()
+                        });
+                        alert("¡Cuenta creada exitosamente, papa!");
+                        localStorage.setItem("user_email", email);
+                        location.reload();
+                    } else {
+                        btn.innerText = "ENTRAR PAPA";
+                    }
                 }
-            } catch (e) { alert("Error de conexión."); }
+            } catch (e) { 
+                console.error(e);
+                alert("Error de conexión con la base de datos."); 
+                btn.innerText = "ENTRAR PAPA";
+            }
         }
 
         function escucharFinanzas() {
