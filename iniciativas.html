@@ -23,14 +23,15 @@
         body { 
             margin: 0; background-color: var(--bg-dark); 
             color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif;
-            display: flex; min-height: 100vh;
+            display: flex; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* --- SIDEBAR ESTANDARIZADO --- */
+        /* --- SIDEBAR RESPONSIVO --- */
         .sidebar { 
             width: 280px; height: 100vh; background: var(--sidebar-bg); 
             position: fixed; left: 0; top: 0; border-right: 2px solid rgba(6, 182, 212, 0.2); 
-            padding: 25px; display: flex; flex-direction: column; z-index: 999;
+            padding: 25px; display: flex; flex-direction: column; z-index: 9999;
+            transition: transform 0.3s ease;
         }
 
         .logo-box { margin-bottom: 30px; }
@@ -54,61 +55,88 @@
         .user-info span { font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 5px; font-weight: 600; }
         
         .nav-menu { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
-        
         .nav-link {
             text-decoration: none; color: var(--text-dim); padding: 12px 16px; border-radius: 12px;
             display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600; font-size: 0.9rem;
         }
-        .nav-link:hover { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); }
-        .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
+        .nav-link:hover, .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
         /* --- CONTENIDO --- */
-        .main-content { margin-left: 280px; padding: 40px 60px; flex-grow: 1; background: radial-gradient(circle at bottom left, #1e1b4b, #020617); }
+        .main-content { 
+            margin-left: 280px; padding: 40px 60px; flex-grow: 1; 
+            background: radial-gradient(circle at bottom left, #1e1b4b, #020617);
+            transition: margin-left 0.3s ease;
+        }
         .header-section h1 { font-size: 2.8rem; font-weight: 800; margin: 10px 0; letter-spacing: -1px; }
 
-        .category-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 0.5fr; gap: 20px; margin: 40px 0; }
+        .category-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 15px; margin: 30px 0; }
         
         .btn-proponer {
             background: linear-gradient(135deg, #a855f7, #ec4899);
-            border: none; border-radius: 25px; padding: 25px; cursor: pointer; color: white;
-            display: flex; align-items: center; gap: 15px; transition: 0.4s;
+            border: none; border-radius: 20px; padding: 15px 25px; cursor: pointer; color: white;
+            display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.4s;
+            font-weight: 800; font-size: 0.9rem;
         }
-        .btn-proponer:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3); }
+        .btn-proponer:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4); }
 
         .cat-card {
             background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px; padding: 20px; display: flex; align-items: center; gap: 12px;
-            cursor: pointer; transition: 0.3s; font-weight: 700; color: var(--text-dim);
+            border-radius: 20px; padding: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;
+            cursor: pointer; transition: 0.3s; font-weight: 700; color: var(--text-dim); font-size: 0.85rem;
         }
         .cat-card:hover, .cat-card.active { border-color: var(--neon-cyan); background: rgba(6, 182, 212, 0.1); color: white; }
 
-        .ideas-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        .ideas-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         .idea-card {
-            background: var(--card-bg); border-radius: 30px; padding: 30px;
+            background: var(--card-bg); border-radius: 25px; padding: 25px;
             border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.4s;
-            display: flex; flex-direction: column; min-height: 350px;
+            display: flex; flex-direction: column; min-height: 320px;
+            backdrop-filter: blur(10px);
         }
-        .idea-card:hover { transform: translateY(-10px); border-color: var(--neon-cyan); }
+        .idea-card:hover { transform: translateY(-5px); border-color: rgba(6, 182, 212, 0.3); }
 
-        .progress-container { background: #0f172a; height: 8px; border-radius: 10px; margin: 20px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #4f46e5, #8b5cf6); transition: 1s ease; width: 0%; }
+        .progress-container { background: #0f172a; height: 10px; border-radius: 10px; margin: 15px 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); transition: 1s ease; width: 0%; }
 
+        /* --- BOTÓN MÓVIL --- */
+        .mobile-nav-toggle {
+            display: none; position: fixed; top: 15px; right: 15px;
+            background: var(--neon-cyan); color: #000;
+            width: 45px; height: 45px; border-radius: 12px;
+            align-items: center; justify-content: center;
+            z-index: 10000; cursor: pointer; box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        /* --- MODAL --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.95); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(10px); padding: 20px; }
+        .modal-content { background: #1e293b; padding: 35px; border-radius: 30px; width: 100%; max-width: 450px; border: 1px solid var(--neon-purple); box-shadow: 0 0 50px rgba(139, 92, 246, 0.2); }
+        .modal-input { width: 100%; background: #0f172a; border: 1px solid #334155; padding: 15px; border-radius: 15px; color: white; margin-bottom: 15px; font-family: inherit; font-size: 0.9rem; }
+        
         .btn-apoyar {
             background: linear-gradient(90deg, #4f46e5, #7c3aed);
-            color: white; border: none; padding: 15px; border-radius: 18px;
+            color: white; border: none; padding: 16px; border-radius: 15px;
             font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: auto;
+            letter-spacing: 1px; font-size: 0.8rem;
         }
-        .btn-apoyar:hover { filter: brightness(1.2); transform: scale(1.02); }
-        .btn-apoyar:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; transform: none; filter: none; }
+        .btn-apoyar:disabled { background: #334155 !important; color: #94a3b8; cursor: not-allowed; transform: none !important; }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.95); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .modal-content { background: #1e293b; padding: 40px; border-radius: 35px; width: 450px; border: 1px solid var(--neon-purple); }
-        .modal-input { width: 100%; background: #0f172a; border: 1px solid #334155; padding: 15px; border-radius: 15px; color: white; margin-bottom: 20px; font-family: inherit; }
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 80px 20px 40px 20px; }
+            .mobile-nav-toggle { display: flex; }
+            .header-section h1 { font-size: 2.2rem; }
+            .category-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
+    <div class="mobile-nav-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
         <div class="logo-box">
             <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
             <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
@@ -135,36 +163,39 @@
 
     <main class="main-content">
         <div class="header-section">
-            <p style="color: var(--neon-cyan); font-weight: 800; letter-spacing: 2px; font-size: 0.7rem;">CO-CREACIÓN COMUNITARIA</p>
+            <p style="color: var(--neon-cyan); font-weight: 800; letter-spacing: 2px; font-size: 0.7rem; text-transform: uppercase;">Co-Creación Comunitaria</p>
             <h1>Laboratorio de Ideas</h1>
-            <p style="color: var(--text-dim);">Suma <strong>200 apoyos</strong> para hacer realidad tu propuesta.</p>
+            <p style="color: var(--text-dim);">Propón cambios y suma <strong>200 apoyos</strong> para elevarlos a votación oficial.</p>
         </div>
 
         <div class="category-grid">
             <button class="btn-proponer" onclick="document.getElementById('modalIdea').style.display='flex'">
-                <i class="fas fa-plus"></i>
-                <div style="text-align: left;"><div style="font-weight: 800;">Proponer Idea</div></div>
+                <i class="fas fa-plus-circle"></i> PROPONER IDEA
             </button>
-            <div class="cat-card" onclick="filtrar('ACADEMIA', this)"><i class="fas fa-graduation-cap" style="color: var(--neon-cyan);"></i> Academia</div>
-            <div class="cat-card" onclick="filtrar('DEPORTES', this)"><i class="fas fa-basketball-ball" style="color: var(--neon-pink);"></i> Deportes</div>
-            <div class="cat-card" onclick="filtrar('TODO', this)"><i class="fas fa-border-all"></i></div>
+            <div class="cat-card" onclick="filtrar('ACADEMIA', this)"><i class="fas fa-graduation-cap"></i> Academia</div>
+            <div class="cat-card" onclick="filtrar('DEPORTES', this)"><i class="fas fa-basketball-ball"></i> Deportes</div>
+            <div class="cat-card active" onclick="filtrar('TODO', this)"><i class="fas fa-border-all"></i> Todas</div>
         </div>
 
-        <div id="contenedor-ideas" class="ideas-container"></div>
+        <div id="contenedor-ideas" class="ideas-container">
+            </div>
     </main>
 
     <div id="modalIdea" class="modal">
         <div class="modal-content">
-            <h2 style="color: var(--neon-cyan); margin-top: 0;">Nueva Propuesta 🚀</h2>
+            <h2 style="color: var(--neon-cyan); margin: 0 0 20px 0; font-weight: 800;">Nueva Propuesta 🚀</h2>
+            <label style="font-size: 0.7rem; color: var(--text-dim); font-weight: 700; display: block; margin-bottom: 8px;">CATEGORÍA</label>
             <select id="catIdea" class="modal-input">
                 <option value="GENERAL">General / Comunitario</option>
                 <option value="ACADEMIA">Academia</option>
                 <option value="DEPORTES">Deportes</option>
             </select>
-            <input type="text" id="tituloIdea" class="modal-input" placeholder="Título de la idea">
-            <textarea id="descIdea" class="modal-input" rows="4" placeholder="¿En qué consiste tu propuesta?"></textarea>
-            <button onclick="crearIdea()" style="background: var(--neon-purple); border: none; padding: 18px; width: 100%; color: white; border-radius: 15px; font-weight: bold; cursor: pointer;">LANZAR IDEA</button>
-            <button onclick="document.getElementById('modalIdea').style.display='none'" style="background: none; border: none; color: gray; width: 100%; margin-top: 15px; cursor: pointer;">Cancelar</button>
+            <input type="text" id="tituloIdea" class="modal-input" placeholder="Título de la idea (ej: Torneo de Ajedrez)">
+            <textarea id="descIdea" class="modal-input" rows="4" placeholder="Describe tu propuesta detalladamente..."></textarea>
+            
+            <button onclick="crearIdea()" style="background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink)); border: none; padding: 18px; width: 100%; color: white; border-radius: 15px; font-weight: 800; cursor: pointer; transition: 0.3s;">LANZAR IDEA</button>
+            
+            <button onclick="document.getElementById('modalIdea').style.display='none'" style="background: none; border: none; color: #94a3b8; width: 100%; margin-top: 15px; cursor: pointer; font-weight: 600;">Tal vez luego</button>
         </div>
     </div>
 
@@ -182,6 +213,10 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
 
         window.addEventListener('load', () => {
             const user = localStorage.getItem("user_email");
@@ -210,27 +245,34 @@
             query.onSnapshot((snap) => {
                 const container = document.getElementById('contenedor-ideas');
                 container.innerHTML = "";
+                if(snap.empty) {
+                    container.innerHTML = `<p style="color: var(--text-dim); text-align: center; grid-column: 1/-1;">No hay propuestas en esta categoría todavía. ¡Sé el primero!</p>`;
+                }
                 snap.forEach((doc) => {
                     const data = doc.data();
                     const id = doc.id;
                     const apoyos = data.apoyos || 0;
                     const porc = Math.min((apoyos / 200) * 100, 100);
-                    
-                    // Verificar si ya votó por esta idea
                     const yaApoyo = localStorage.getItem("apoyo_" + id);
 
                     container.innerHTML += `
                         <div class="idea-card">
-                            <span style="font-size: 0.7rem; color: var(--neon-cyan); font-weight: 800; text-transform: uppercase;">${data.categoria || 'GENERAL'}</span>
-                            <h3 style="margin: 10px 0; color: white;">${data.titulo}</h3>
-                            <p style="color: var(--text-dim); font-size: 0.85rem; flex-grow: 1;">${data.descripcion}</p>
+                            <div style="display:flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.65rem; color: var(--neon-cyan); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">${data.categoria || 'GENERAL'}</span>
+                                <i class="fas fa-lightbulb" style="color: rgba(255,255,255,0.1)"></i>
+                            </div>
+                            <h3 style="margin: 12px 0; color: white; font-size: 1.1rem; line-height: 1.3;">${data.titulo}</h3>
+                            <p style="color: var(--text-dim); font-size: 0.85rem; flex-grow: 1; line-height: 1.5;">${data.descripcion}</p>
+                            
                             <div class="progress-container"><div class="progress-bar" style="width: ${porc}%"></div></div>
-                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight: 800; margin-bottom: 20px;">
-                                <span>${apoyos} / 200 APOYOS</span>
+                            
+                            <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight: 800; margin-bottom: 20px;">
+                                <span style="color: ${porc >= 100 ? 'var(--success)' : 'white'}">${apoyos} / 200 APOYOS</span>
                                 <span>${porc.toFixed(0)}%</span>
                             </div>
+                            
                             <button class="btn-apoyar" id="btn-${id}" ${yaApoyo ? 'disabled' : ''} onclick="apoyar('${id}')">
-                                ${yaApoyo ? 'PROYECTO APOYADO' : 'APOYAR PROYECTO'}
+                                ${yaApoyo ? '<i class="fas fa-check"></i> APOYADO' : 'APOYAR PROYECTO'}
                             </button>
                         </div>`;
                 });
@@ -238,10 +280,7 @@
         }
 
         function apoyar(id) {
-            const yaApoyo = localStorage.getItem("apoyo_" + id);
-            if(yaApoyo) return;
-
-            // Bloqueo inmediato del botón para evitar doble clic
+            if(localStorage.getItem("apoyo_" + id)) return;
             const btn = document.getElementById('btn-' + id);
             btn.disabled = true;
             btn.innerText = "PROCESANDO...";
@@ -249,16 +288,10 @@
             db.collection("iniciativas").doc(id).update({ 
                 apoyos: firebase.firestore.FieldValue.increment(1) 
             }).then(() => {
-                // Guardamos en local para que no pueda volver a votar
                 localStorage.setItem("apoyo_" + id, "true");
-                
-                // El onSnapshot se encargará de actualizar el porcentaje y la barra 
-                // automáticamente en toda la interfaz de forma fluida.
-                console.log("Voto registrado con éxito, papa.");
             }).catch((error) => {
-                console.error("Error al votar:", error);
+                console.error("Error:", error);
                 btn.disabled = false;
-                btn.innerText = "REINTENTAR APOYO";
             });
         }
 
@@ -266,14 +299,21 @@
             const t = document.getElementById('tituloIdea').value;
             const d = document.getElementById('descIdea').value;
             const c = document.getElementById('catIdea').value;
-            if(!t || !d) return alert("Por favor, completa todos los campos, papa.");
+            
+            if(!t || !d) return alert("Completa todos los campos antes de lanzar tu idea, papa.");
 
             db.collection("iniciativas").add({
-                titulo: t, descripcion: d, categoria: c, apoyos: 0, fechaCreacion: Date.now()
+                titulo: t, 
+                descripcion: d, 
+                categoria: c, 
+                apoyos: 0, 
+                fechaCreacion: Date.now(),
+                autor: localStorage.getItem("user_email")
             }).then(() => {
                 document.getElementById('modalIdea').style.display = 'none';
                 document.getElementById('tituloIdea').value = "";
                 document.getElementById('descIdea').value = "";
+                alert("🚀 ¡Idea lanzada con éxito! Ahora compártela para conseguir apoyos.");
             });
         }
         cargarIdeas();

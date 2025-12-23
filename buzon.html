@@ -28,18 +28,18 @@
             display: flex; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* --- SIDEBAR UNIFICADO --- */
+        /* --- SIDEBAR RESPONSIVO --- */
         .sidebar { 
             width: 280px; height: 100vh; background: var(--sidebar-bg); 
             position: fixed; left: 0; top: 0; border-right: 2px solid rgba(6, 182, 212, 0.2); 
             padding: 25px; z-index: 9999; display: flex; flex-direction: column;
+            transition: transform 0.3s ease;
         }
         
         .logo-box { margin-bottom: 30px; }
         .logo-main { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
         .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
 
-        /* CUADRO DE USUARIO GRANDE */
         .user-profile {
             background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 20px;
             display: flex; align-items: center; gap: 12px; border: 1px solid rgba(6, 182, 212, 0.3); 
@@ -57,8 +57,6 @@
         .user-info span { font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 5px; font-weight: 600; }
 
         .nav-menu { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
-        
-        /* TAMAÑO DE LETRA CORREGIDO A 0.9rem */
         .nav-link {
             text-decoration: none; color: var(--text-dim); padding: 12px 16px; border-radius: 12px;
             display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600; font-size: 0.9rem;
@@ -66,13 +64,18 @@
         .nav-link:hover, .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
         /* --- CONTENIDO --- */
-        .main-content { margin-left: 280px; padding: 40px 60px; flex-grow: 1; background: radial-gradient(circle at center, #1e1b4b, #020617); display: flex; justify-content: center; align-items: center; }
+        .main-content { 
+            margin-left: 280px; padding: 40px 20px; flex-grow: 1; 
+            background: radial-gradient(circle at center, #1e1b4b, #020617); 
+            display: flex; justify-content: center; align-items: center;
+            transition: margin-left 0.3s ease;
+        }
 
         .buzon-container { max-width: 600px; width: 100%; }
 
         .buzon-capsule {
             background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(20px);
-            border-radius: 40px; padding: 50px; border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px; padding: 40px; border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.5); position: relative;
         }
 
@@ -85,18 +88,18 @@
         }
 
         .header-icon { 
-            font-size: 4.5rem; color: var(--neon-cyan); text-align: center; 
+            font-size: 3.5rem; color: var(--neon-cyan); text-align: center; 
             margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--neon-cyan));
         }
 
-        .form-group { margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; }
         .form-group label { 
             display: block; color: var(--neon-cyan); font-size: 0.75rem; 
-            font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
+            font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
         }
 
         .form-group input, .form-group textarea {
-            width: 100%; padding: 18px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.1);
             background: rgba(15, 23, 42, 0.8); color: white; outline: none; transition: 0.3s; font-family: inherit;
         }
 
@@ -106,17 +109,41 @@
 
         .btn-enviar {
             background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink)); 
-            color: white; border: none; width: 100%; padding: 20px; border-radius: 20px;
+            color: white; border: none; width: 100%; padding: 18px; border-radius: 20px;
             font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.95rem;
         }
 
         .btn-enviar:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4); }
+
+        /* BOTÓN MÓVIL */
+        .mobile-nav-toggle {
+            display: none; position: fixed; top: 15px; right: 15px;
+            background: var(--neon-cyan); color: #000;
+            width: 45px; height: 45px; border-radius: 12px;
+            align-items: center; justify-content: center;
+            z-index: 10000; cursor: pointer;
+        }
+
+        /* MEDIA QUERIES */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; padding-top: 80px; }
+            .mobile-nav-toggle { display: flex; }
+            .buzon-capsule { padding: 30px 20px; border-radius: 30px; }
+            .buzon-capsule::after { border-radius: 30px; }
+            h1 { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
+    <div class="mobile-nav-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
         <div class="logo-box">
             <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
             <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
@@ -143,28 +170,28 @@
 
     <main class="main-content">
         <div class="buzon-container">
-            <header style="text-align: center; margin-bottom: 40px;">
+            <header style="text-align: center; margin-bottom: 30px;">
                 <div class="header-icon"><i class="fas fa-user-secret"></i></div>
-                <h1 style="margin:0; font-size: 2.2rem; font-weight: 800;">Buzón Ciudadano</h1>
-                <p style="color: var(--text-dim);">Tu opinión llega directo a los representantes de forma segura.</p>
+                <h1 style="margin:0; font-weight: 800;">Buzón Ciudadano</h1>
+                <p style="color: var(--text-dim); font-size: 0.9rem;">Tu opinión llega directo a los representantes.</p>
             </header>
 
             <div class="buzon-capsule">
                 <div class="form-group">
                     <label>Dirigido a:</label>
-                    <input type="text" id="asunto" placeholder="Ej: Comité de Padres, Dirección, Mantenimiento...">
+                    <input type="text" id="asunto" placeholder="Ej: Comité, Dirección...">
                 </div>
 
                 <div class="form-group">
-                    <label>Comentario o Sugerencia</label>
-                    <textarea id="mensaje" rows="5" placeholder="Escribe aquí tu propuesta o reporte..."></textarea>
+                    <label>Mensaje</label>
+                    <textarea id="mensaje" rows="4" placeholder="Escribe aquí tu propuesta..."></textarea>
                 </div>
 
                 <button class="btn-enviar" id="btnEnviar">
-                    <i class="fas fa-paper-plane"></i> ENVIAR SUGERENCIA
+                    <i class="fas fa-paper-plane"></i> ENVIAR AHORA
                 </button>
                 
-                <p style="text-align: center; color: var(--text-dim); font-size: 0.7rem; margin-top: 25px; letter-spacing: 1px;">
+                <p style="text-align: center; color: var(--text-dim); font-size: 0.65rem; margin-top: 20px; letter-spacing: 1px;">
                     ESTE MENSAJE ES ENVIADO BAJO PROTOCOLO DE PRIVACIDAD
                 </p>
             </div>
@@ -186,6 +213,11 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // Menú Móvil
+        window.toggleMenu = function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
 
         // CONTROL DE SESIÓN
         window.addEventListener('load', () => {
@@ -213,6 +245,7 @@
                 await addDoc(collection(db, "buzon"), {
                     asunto: asu,
                     mensaje: msg,
+                    usuario: localStorage.getItem("user_email"),
                     fecha: serverTimestamp()
                 });
 

@@ -28,18 +28,18 @@
             display: flex; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* SIDEBAR UNIFICADO - IDENTICO AL INDEX */
+        /* SIDEBAR RESPONSIVO */
         .sidebar { 
             width: 280px; height: 100vh; background: var(--sidebar-bg); 
             position: fixed; left: 0; top: 0; border-right: 2px solid rgba(6, 182, 212, 0.2); 
             padding: 25px; z-index: 9999; display: flex; flex-direction: column;
+            transition: transform 0.3s ease;
         }
         
         .logo-box { margin-bottom: 30px; }
         .logo-main { color: var(--neon-cyan); font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; text-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
         .logo-sub { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; line-height: 1.2; }
 
-        /* CUADRO DE USUARIO GRANDE */
         .user-profile {
             background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 20px;
             display: flex; align-items: center; gap: 12px; border: 1px solid rgba(6, 182, 212, 0.3); 
@@ -57,8 +57,6 @@
         .user-info span { font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 5px; font-weight: 600; }
 
         .nav-menu { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
-        
-        /* TAMAÑO DE LETRA CORREGIDO A 0.9rem */
         .nav-link {
             text-decoration: none; color: var(--text-dim); padding: 12px 16px; border-radius: 12px;
             display: flex; align-items: center; gap: 12px; transition: 0.3s; font-weight: 600; font-size: 0.9rem;
@@ -66,11 +64,15 @@
         .nav-link:hover, .nav-link.active { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); border-left: 4px solid var(--neon-cyan); }
 
         /* CONTENIDO PRINCIPAL */
-        .main-content { margin-left: 280px; padding: 40px 60px; flex-grow: 1; background: radial-gradient(circle at top right, #1e1b4b, #020617); }
+        .main-content { 
+            margin-left: 280px; padding: 40px 60px; flex-grow: 1; 
+            background: radial-gradient(circle at top right, #1e1b4b, #020617);
+            transition: margin-left 0.3s ease;
+        }
 
         .welcome-section h1 { font-size: 2.5rem; font-weight: 800; margin: 0; color: white; }
 
-        /* HEADER DE BALANCE */
+        /* BALANCE */
         .balance-card {
             background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px);
             border-radius: 35px; padding: 40px; border: 1px solid rgba(255, 255, 255, 0.1);
@@ -78,25 +80,24 @@
         }
         .balance-main {
             background: #0f172a; border: 2px solid var(--success);
-            border-radius: 30px; padding: 40px; display: inline-block; min-width: 320px;
+            border-radius: 30px; padding: 30px; display: inline-block; min-width: 300px;
             box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
         }
-        .balance-main h2 { font-size: 3.5rem; margin: 10px 0; color: white; letter-spacing: -1px; }
+        .balance-main h2 { font-size: 3rem; margin: 10px 0; color: white; letter-spacing: -1px; }
 
-        /* ESTADÍSTICAS */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px; }
-        .stat-box { background: rgba(255,255,255,0.02); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); text-align: left; }
+        .stat-box { background: rgba(255,255,255,0.02); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); text-align: left; }
         .stat-box.income { border-left: 4px solid var(--success); }
         .stat-box.expense { border-left: 4px solid var(--neon-pink); }
-        .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); font-weight: 800; }
-        .stat-value { font-size: 1.6rem; font-weight: 800; display: block; margin-top: 5px; }
+        .stat-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); font-weight: 800; }
+        .stat-value { font-size: 1.4rem; font-weight: 800; display: block; margin-top: 5px; }
 
-        /* TABLA DE MOVIMIENTOS */
+        /* TABLA */
         .history-card {
             background: rgba(30, 41, 59, 0.3); border-radius: 30px; padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.05); margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05); margin-top: 30px; overflow-x: auto;
         }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; min-width: 500px; }
         th { text-align: left; padding: 15px; color: var(--neon-cyan); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
         td { padding: 18px 15px; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.05); }
         td:first-child { border-radius: 15px 0 0 15px; font-weight: 600; color: white; }
@@ -105,11 +106,36 @@
         .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .badge-ingreso { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
         .badge-egreso { background: rgba(236, 72, 153, 0.1); color: var(--neon-pink); border: 1px solid rgba(236, 72, 153, 0.3); }
+
+        /* BOTÓN MÓVIL */
+        .mobile-nav-toggle {
+            display: none; position: fixed; top: 15px; right: 15px;
+            background: var(--neon-cyan); color: #000;
+            width: 45px; height: 45px; border-radius: 12px;
+            align-items: center; justify-content: center;
+            z-index: 10000; cursor: pointer;
+        }
+
+        /* MEDIA QUERIES */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 80px 20px 40px 20px; }
+            .mobile-nav-toggle { display: flex; }
+            .welcome-section h1 { font-size: 1.8rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .balance-main { width: 100%; min-width: unset; }
+            .balance-main h2 { font-size: 2.2rem; }
+        }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
+    <div class="mobile-nav-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
         <div class="logo-box">
             <div class="logo-main"><i class="fas fa-users"></i> VOX</div>
             <div class="logo-sub">Comunidad Estudiantil<br>y Padres de Familia</div>
@@ -143,7 +169,7 @@
 
         <div class="balance-card">
             <div class="balance-main">
-                <span style="color: var(--success); font-weight: 800; font-size: 0.75rem; letter-spacing: 2px;">SALDO DISPONIBLE EN CAJA</span>
+                <span style="color: var(--success); font-weight: 800; font-size: 0.65rem; letter-spacing: 2px;">SALDO DISPONIBLE EN CAJA</span>
                 <h2 id="balance-h2">$0.00</h2>
             </div>
 
@@ -160,12 +186,12 @@
         </div>
 
         <div class="history-card">
-            <h3 style="margin-top:0; margin-bottom: 25px; font-size: 1.1rem;"><i class="fas fa-receipt" style="color: var(--neon-cyan); margin-right: 10px;"></i> Libro Mayor de Transacciones</h3>
+            <h3 style="margin-top:0; margin-bottom: 25px; font-size: 1.1rem;"><i class="fas fa-receipt" style="color: var(--neon-cyan); margin-right: 10px;"></i> Libro Mayor</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Concepto de Movimiento</th>
-                        <th>Clasificación</th>
+                        <th>Concepto</th>
+                        <th>Tipo</th>
                         <th style="text-align: right;">Importe</th>
                     </tr>
                 </thead>
@@ -190,7 +216,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // CONTROL DE SESIÓN Y USUARIO DINÁMICO
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
         window.addEventListener('load', () => {
             const user = localStorage.getItem("user_email");
             if (user) {
